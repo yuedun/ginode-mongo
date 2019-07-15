@@ -21,11 +21,11 @@ func Logger() gin.HandlerFunc {
 
 		// after request
 		latency := time.Since(t)
-		log.Print(latency)
+		log.Print("耗时：", latency)
 
 		// access the status we are sending
 		status := c.Writer.Status()
-		log.Println(status)
+		log.Println("状态：", status)
 	}
 }
 

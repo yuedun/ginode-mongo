@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/yuedun/ginode/service"
 	"io/ioutil"
 	"net/http"
 
@@ -20,8 +21,12 @@ func Index(c *gin.Context) {
 	})
 }
 
-func GetUserInfo(c *gin.Context){
+func GetUserInfo(c *gin.Context) {
+	user, err := service.GetUserInfo()
+	if err != nil {
+		fmt.Println("err:", err)
+	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": "GetUserInfo",
+		"message": user,
 	})
 }

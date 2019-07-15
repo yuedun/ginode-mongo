@@ -1,15 +1,14 @@
 package service
 
 import (
-	"fmt"
-
 	. "github.com/yuedun/ginode/model"
 )
 
-type UserService struct {
-}
-
-func (s *UserService) GetUserInfo() {
-	user := new(User)
-	fmt.Println(user)
+func GetUserInfo() (User, error) {
+	var user User
+	err := Db.First(&user).Error
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }

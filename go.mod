@@ -10,12 +10,12 @@ require (
 	github.com/jinzhu/gorm v1.9.10
 	github.com/kr/pretty v0.1.0 // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
-	golang.org/x/exp v0.0.0-20190627132806-fd42eb6b336f // indirect
-	golang.org/x/image v0.0.0-20190703141733-d6a02ce849c9 // indirect
-	golang.org/x/mobile v0.0.0-20190607214518-6fa95d984e88 // indirect
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/sys v0.0.0-20190710143415-6ec70d6a5542 // indirect
-	golang.org/x/tools v0.0.0-20190710184609-286818132824 // indirect
-	google.golang.org/genproto v0.0.0-20190708153700-3bdd9d9f5532 // indirect
-	google.golang.org/grpc v1.22.0 // indirect
 )
+
+replace golang.org/x/net v0.0.0-20190628185345-da137c7871d7 => github.com/golang/net v0.0.0-20190628185345-da137c7871d7
+
+replace golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 => github.com/golang/crypto v0.0.0-20190701094942-4def268fd1a4
+
+replace golang.org/x/sys v0.0.0-20190710143415-6ec70d6a5542 => github.com/golang/sys v0.0.0-20190710143415-6ec70d6a5542
