@@ -30,3 +30,14 @@ func GetUserInfo(c *gin.Context) {
 		"message": user,
 	})
 }
+
+
+func GetUserInfoBySql(c *gin.Context) {
+	user, err := service.GetUserInfoBySql()
+	if err != nil {
+		fmt.Println("err:", err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": user,
+	})
+}

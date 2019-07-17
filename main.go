@@ -15,6 +15,7 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "hello gin!!!!!",
+			"code": 0,
 		})
 	})
 
@@ -28,4 +29,5 @@ func main() {
 func routerRegister(router *gin.Engine) {
 	router.POST("/index", controller.Index)
 	router.GET("/get-user-info", middleware.Auth(), controller.GetUserInfo)
+	router.GET("/get-user-info-by-sql", controller.GetUserInfoBySql)
 }

@@ -11,6 +11,6 @@ func init() {
 		panic("连接数据库失败")
 	}
 	Db.LogMode(true)
-	Db.SingularTable(true) // 如果设置为true,`User`的默认表名为`user`,使用`TableName`设置的表名不受影响
+	//Db.SingularTable(true) // 如果设置为true,`User`的默认表名为`user`,使用`TableName`设置的表名不受影响
 	//defer Db.Close()
 }

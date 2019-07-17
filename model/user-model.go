@@ -9,3 +9,8 @@ type User struct {
 	Status      int    `json:"status"`
 	Description string `json:"description"`
 }
+
+// 设置User的表名为`profiles`
+func (User) TableName() string {
+	return "user"
+}
