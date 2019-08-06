@@ -7,6 +7,7 @@ import (
 	"github.com/yuedun/ginode/service"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -60,21 +61,25 @@ func CreateUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	user := model.User{}
-	err := service.UpdateUser(user)
+	userId, _ := strconv.Atoi(c.Param("id"))
+	user.Addr = c.PostForm("addr")
+	err := service.UpdateUser(userId, &user)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": user,
+		"data":    user,
+		"message": "ok",
 	})
 }
 
 func DeleteUser(c *gin.Context) {
-	user, err := service.DeleteUser()
+	userId, _ := strconv.Atoi(c.Param("id"))
+	err := service.DeleteUser(userId)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": user,
+		"message": "ok",
 	})
 }

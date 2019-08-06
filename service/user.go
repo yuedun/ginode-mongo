@@ -22,7 +22,7 @@ func GetUserInfoBySql() (user model.User, err error) {
 }
 
 func CreateUser(user *model.User) (err error) {
-	err=model.Db.Create(user).Error
+	err = model.Db.Create(user).Error
 	fmt.Println(user)
 	if err != nil {
 		return err
@@ -30,18 +30,18 @@ func CreateUser(user *model.User) (err error) {
 	return nil
 }
 
-func UpdateUser(user model.User) (err error) {
-	err =model.Db.Update(user).Error
+func UpdateUser(userId int, user *model.User) (err error) {
+	err = model.Db.Model(user).Where("id = ?", userId).Update(user).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func DeleteUser() (user model.User, err error) {
-	model.Db.Delete(user)
+func DeleteUser(userId int) (err error) {
+	model.Db.Where("id = ?", userId).Delete(model.User{})
 	if err != nil {
-		return user, err
+		return err
 	}
-	return user, nil
+	return nil
 }
