@@ -9,6 +9,9 @@ require (
 	github.com/golang/protobuf v1.3.2 // indirect
 	github.com/jinzhu/gorm v1.9.10
 	github.com/kr/pretty v0.1.0 // indirect
+	github.com/liudng/dogo v0.0.0-20161102105440-7887b849de84 // indirect
+	github.com/zhgo/config v0.0.0-20150924145423-9caf41330bd9 // indirect
+	github.com/zhgo/console v0.0.0-20150817103316-22d59bcbd28e // indirect
 	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4 // indirect
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/sys v0.0.0-20190710143415-6ec70d6a5542 // indirect

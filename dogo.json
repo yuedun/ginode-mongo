@@ -1,0 +1,10 @@
+{
+    "WorkingDir": "E:\\ginode",
+    "SourceDir": [
+        "E:\\ginode"
+    ],
+    "SourceExt": [".c", ".cpp", ".go", ".h"],
+    "BuildCmd": "go build",
+    "RunCmd": "ginode.exe",
+    "Decreasing": 1
+}

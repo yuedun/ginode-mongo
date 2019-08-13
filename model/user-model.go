@@ -15,7 +15,7 @@ type User struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
-// 设置User的表名为`profiles`
+// 设置User的表名为`user`
 func (User) TableName() string {
 	return "user"
 }
