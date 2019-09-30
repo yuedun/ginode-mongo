@@ -1,10 +1,8 @@
-package controller
+package post
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/yuedun/ginode/model"
-	"github.com/yuedun/ginode/service"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -24,8 +22,9 @@ func Index(c *gin.Context) {
 	})
 }
 
-func GetUserInfo(c *gin.Context) {
-	user, err := service.GetUserInfo()
+func GetPostInfo(c *gin.Context) {
+	userService := NewPostService()
+	user, err := userService.GetPostInfo()
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -34,8 +33,9 @@ func GetUserInfo(c *gin.Context) {
 	})
 }
 
-func GetUserInfoBySql(c *gin.Context) {
-	user, err := service.GetUserInfoBySql()
+func GetPostInfoBySql(c *gin.Context) {
+	userService := NewPostService()
+	user, err := userService.GetPostInfoBySql()
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -44,12 +44,13 @@ func GetUserInfoBySql(c *gin.Context) {
 	})
 }
 
-func CreateUser(c *gin.Context) {
-	user := model.User{}
+func CreatePost(c *gin.Context) {
+	userService := NewPostService()
+	user := Post{}
 	fmt.Println(">>>", c.PostForm("mobile"))
 	user.Mobile = c.PostForm("mobile")
 	user.CreatedAt = time.Now()
-	err := service.CreateUser(&user)
+	err := userService.CreatePost(&user)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -59,11 +60,12 @@ func CreateUser(c *gin.Context) {
 	})
 }
 
-func UpdateUser(c *gin.Context) {
-	user := model.User{}
+func UpdatePost(c *gin.Context) {
+	userService := NewPostService()
+	user := Post{}
 	userId, _ := strconv.Atoi(c.Param("id"))
 	user.Addr = c.PostForm("addr")
-	err := service.UpdateUser(userId, &user)
+	err := userService.UpdatePost(userId, &user)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -73,9 +75,10 @@ func UpdateUser(c *gin.Context) {
 	})
 }
 
-func DeleteUser(c *gin.Context) {
+func DeletePost(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Param("id"))
-	err := service.DeleteUser(userId)
+	userService := NewPostService()
+	err := userService.DeletePost(userId)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
