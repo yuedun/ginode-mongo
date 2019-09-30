@@ -10,7 +10,7 @@ import (
 面向接口开发的好处是要对下面的函数进行测试时，不需要依赖一个全局的mysql连接，只需要调用NewService传一个mysql连接参数即可测试
  */
 type UserService interface {
-	GetUserInfo() (user User, err error)
+	GetUserInfo(userId int) (user User, err error)
 	GetUserInfoBySql() (user User, err error)
 	CreateUser(user *User) (err error)
 	UpdateUser(userId int, user *User) (err error)
@@ -25,8 +25,9 @@ func NewService(mysql *gorm.DB) UserService {
 		mysql: mysql,
 	}
 }
-func (u *userService) GetUserInfo() (user User, err error) {
-	err = u.mysql.First(&user).Error
+
+func (u *userService) GetUserInfo(userId int) (user User, err error) {
+	err = u.mysql.First(&user, userId).Error
 	if err != nil {
 		return user, err
 	}
@@ -64,4 +65,24 @@ func (u *userService) DeleteUser(userId int) (err error) {
 		return err
 	}
 	return nil
+}
+
+type newUserService struct {
+	userService
+	mysql *gorm.DB
+}
+
+func NewUserService(mysql *gorm.DB) UserService {
+	return &newUserService{
+		mysql:mysql,
+	}
+}
+
+func (u *newUserService) GetUserInfo(userId int) (user User, err error){
+	err = u.mysql.First(&user, userId).Error
+	if err != nil {
+		return user, err
+	}
+	fmt.Println("新方法")
+	return user, nil
 }

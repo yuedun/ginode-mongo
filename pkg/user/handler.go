@@ -24,13 +24,15 @@ func Index(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	userService := NewService(db.Mysql)
-	user, err := userService.GetUserInfo()
+	userId, _ := strconv.Atoi(c.Param("id"))
+	userService := NewUserService(db.Mysql)
+	user, err := userService.GetUserInfo(userId)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": user,
+		"data": user,
+		"message": "ok",
 	})
 }
 
