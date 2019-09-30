@@ -11,7 +11,7 @@ import (
 
 func TestGetUser(t *testing.T)  {
 	userService := user.NewService(db.Mysql)
-	user, err := userService.GetUserInfo()
+	user, err := userService.GetUserInfo(1)
 	if err!=nil{
 		t.Error(err)
 	}
