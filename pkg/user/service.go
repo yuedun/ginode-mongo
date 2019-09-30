@@ -2,9 +2,13 @@ package user
 
 import (
 	"fmt"
-	"github.com/yuedun/ginode/db"
+	"github.com/jinzhu/gorm"
 )
 
+/**
+面向接口开发：
+面向接口开发的好处是要对下面的函数进行测试时，不需要依赖一个全局的mysql连接，只需要调用NewService传一个mysql连接参数即可测试
+ */
 type UserService interface {
 	GetUserInfo() (user User, err error)
 	GetUserInfoBySql() (user User, err error)
@@ -13,13 +17,16 @@ type UserService interface {
 	DeleteUser(userId int) (err error)
 }
 type userService struct {
+	mysql *gorm.DB
 }
 
-func NewUserService() UserService {
-	return &userService{}
+func NewService(mysql *gorm.DB) UserService {
+	return &userService{
+		mysql: mysql,
+	}
 }
 func (u *userService) GetUserInfo() (user User, err error) {
-	err = db.Mysql.First(&user).Error
+	err = u.mysql.First(&user).Error
 	if err != nil {
 		return user, err
 	}
@@ -27,7 +34,7 @@ func (u *userService) GetUserInfo() (user User, err error) {
 }
 
 func (u *userService) GetUserInfoBySql() (user User, err error) {
-	err = db.Mysql.Raw("select * from user where id=?", user.Id).Scan(&user).Error
+	err = u.mysql.Raw("select * from user where id=?", user.Id).Scan(&user).Error
 	if err != nil {
 		return user, err
 	}
@@ -35,7 +42,7 @@ func (u *userService) GetUserInfoBySql() (user User, err error) {
 }
 
 func (u *userService) CreateUser(user *User) (err error) {
-	err = db.Mysql.Create(user).Error
+	err = u.mysql.Create(user).Error
 	fmt.Println(user)
 	if err != nil {
 		return err
@@ -44,7 +51,7 @@ func (u *userService) CreateUser(user *User) (err error) {
 }
 
 func (u *userService) UpdateUser(userId int, user *User) (err error) {
-	err = db.Mysql.Model(user).Where("id = ?", userId).Update(user).Error
+	err = u.mysql.Model(user).Where("id = ?", userId).Update(user).Error
 	if err != nil {
 		return err
 	}
@@ -52,7 +59,7 @@ func (u *userService) UpdateUser(userId int, user *User) (err error) {
 }
 
 func (u *userService) DeleteUser(userId int) (err error) {
-	db.Mysql.Where("id = ?", userId).Delete(User{})
+	u.mysql.Where("id = ?", userId).Delete(User{})
 	if err != nil {
 		return err
 	}

@@ -2,7 +2,7 @@ package post
 
 import (
 	"fmt"
-	"github.com/yuedun/ginode/db"
+	"github.com/jinzhu/gorm"
 )
 
 type PostService interface {
@@ -12,31 +12,34 @@ type PostService interface {
 	UpdatePost(userId int, user *Post) (err error)
 	DeletePost(userId int) (err error)
 }
-type userService struct {
+type postService struct {
+	mysql *gorm.DB
 }
 
-func NewPostService() PostService {
-	return &userService{}
+func NewService(mysql *gorm.DB) PostService {
+	return &postService{
+		mysql: mysql,
+	}
 }
 
-func (u *userService) GetPostInfo() (post Post, err error) {
-	err = db.Mysql.First(&post).Error
+func (u *postService) GetPostInfo() (post Post, err error) {
+	err = u.mysql.First(&post).Error
 	if err != nil {
 		return post, err
 	}
 	return post, nil
 }
 
-func (u *userService) GetPostInfoBySql() (post Post, err error) {
-	err = db.Mysql.Raw("select * from post where id=?", post.Id).Scan(&post).Error
+func (u *postService) GetPostInfoBySql() (post Post, err error) {
+	err = u.mysql.Raw("select * from post where id=?", post.Id).Scan(&post).Error
 	if err != nil {
 		return post, err
 	}
 	return post, nil
 }
 
-func (u *userService) CreatePost(post *Post) (err error) {
-	err = db.Mysql.Create(post).Error
+func (u *postService) CreatePost(post *Post) (err error) {
+	err = u.mysql.Create(post).Error
 	fmt.Println(post)
 	if err != nil {
 		return err
@@ -44,16 +47,16 @@ func (u *userService) CreatePost(post *Post) (err error) {
 	return nil
 }
 
-func (u *userService) UpdatePost(userId int, post *Post) (err error) {
-	err = db.Mysql.Model(post).Where("id = ?", userId).Update(post).Error
+func (u *postService) UpdatePost(userId int, post *Post) (err error) {
+	err = u.mysql.Model(post).Where("id = ?", userId).Update(post).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *userService) DeletePost(userId int) (err error) {
-	db.Mysql.Where("id = ?", userId).Delete(Post{})
+func (u *postService) DeletePost(userId int) (err error) {
+	u.mysql.Where("id = ?", userId).Delete(Post{})
 	if err != nil {
 		return err
 	}

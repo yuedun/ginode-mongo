@@ -3,6 +3,7 @@ package user
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/yuedun/ginode/db"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -23,7 +24,7 @@ func Index(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	userService := NewUserService()
+	userService := NewService(db.Mysql)
 	user, err := userService.GetUserInfo()
 	if err != nil {
 		fmt.Println("err:", err)
@@ -34,7 +35,7 @@ func GetUserInfo(c *gin.Context) {
 }
 
 func GetUserInfoBySql(c *gin.Context) {
-	userService := NewUserService()
+	userService := NewService(db.Mysql)
 	user, err := userService.GetUserInfoBySql()
 	if err != nil {
 		fmt.Println("err:", err)
@@ -45,7 +46,7 @@ func GetUserInfoBySql(c *gin.Context) {
 }
 
 func CreateUser(c *gin.Context) {
-	userService := NewUserService()
+	userService := NewService(db.Mysql)
 	user := User{}
 	fmt.Println(">>>", c.PostForm("mobile"))
 	user.Mobile = c.PostForm("mobile")
@@ -61,7 +62,7 @@ func CreateUser(c *gin.Context) {
 }
 
 func UpdateUser(c *gin.Context) {
-	userService := NewUserService()
+	userService := NewService(db.Mysql)
 	user := User{}
 	userId, _ := strconv.Atoi(c.Param("id"))
 	user.Addr = c.PostForm("addr")
@@ -77,7 +78,7 @@ func UpdateUser(c *gin.Context) {
 
 func DeleteUser(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Param("id"))
-	userService := NewUserService()
+	userService := NewService(db.Mysql)
 	err := userService.DeleteUser(userId)
 	if err != nil {
 		fmt.Println("err:", err)

@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/yuedun/ginode/middleware"
 	_ "github.com/yuedun/ginode/db"
+	"github.com/yuedun/ginode/middleware"
 	"github.com/yuedun/ginode/router"
 )
 

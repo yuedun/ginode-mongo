@@ -3,6 +3,7 @@ package post
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/yuedun/ginode/db"
 	"io/ioutil"
 	"net/http"
 	"strconv"
@@ -23,7 +24,7 @@ func Index(c *gin.Context) {
 }
 
 func GetPostInfo(c *gin.Context) {
-	userService := NewPostService()
+	userService := NewService(db.Mysql)
 	user, err := userService.GetPostInfo()
 	if err != nil {
 		fmt.Println("err:", err)
@@ -34,7 +35,7 @@ func GetPostInfo(c *gin.Context) {
 }
 
 func GetPostInfoBySql(c *gin.Context) {
-	userService := NewPostService()
+	userService := NewService(db.Mysql)
 	user, err := userService.GetPostInfoBySql()
 	if err != nil {
 		fmt.Println("err:", err)
@@ -45,7 +46,7 @@ func GetPostInfoBySql(c *gin.Context) {
 }
 
 func CreatePost(c *gin.Context) {
-	userService := NewPostService()
+	userService := NewService(db.Mysql)
 	user := Post{}
 	fmt.Println(">>>", c.PostForm("mobile"))
 	user.Mobile = c.PostForm("mobile")
@@ -61,7 +62,7 @@ func CreatePost(c *gin.Context) {
 }
 
 func UpdatePost(c *gin.Context) {
-	userService := NewPostService()
+	userService := NewService(db.Mysql)
 	user := Post{}
 	userId, _ := strconv.Atoi(c.Param("id"))
 	user.Addr = c.PostForm("addr")
@@ -77,7 +78,7 @@ func UpdatePost(c *gin.Context) {
 
 func DeletePost(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Param("id"))
-	userService := NewPostService()
+	userService := NewService(db.Mysql)
 	err := userService.DeletePost(userId)
 	if err != nil {
 		fmt.Println("err:", err)
