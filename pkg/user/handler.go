@@ -24,9 +24,9 @@ func Index(c *gin.Context) {
 }
 
 func GetUserInfo(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Param("id"))
+	userID, _ := strconv.Atoi(c.Param("id"))
 	userService := NewUserService(db.Mysql)
-	user, err := userService.GetUserInfo(userId)
+	user, err := userService.GetUserInfo(userID)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -38,7 +38,7 @@ func GetUserInfo(c *gin.Context) {
 
 func GetUserInfoBySql(c *gin.Context) {
 	userService := NewService(db.Mysql)
-	user, err := userService.GetUserInfoBySql()
+	user, err := userService.GetUserInfoBySQL()
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -66,9 +66,9 @@ func CreateUser(c *gin.Context) {
 func UpdateUser(c *gin.Context) {
 	userService := NewService(db.Mysql)
 	user := User{}
-	userId, _ := strconv.Atoi(c.Param("id"))
+	userID, _ := strconv.Atoi(c.Param("id"))
 	user.Addr = c.PostForm("addr")
-	err := userService.UpdateUser(userId, &user)
+	err := userService.UpdateUser(userID, &user)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -79,9 +79,9 @@ func UpdateUser(c *gin.Context) {
 }
 
 func DeleteUser(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Param("id"))
+	userID, _ := strconv.Atoi(c.Param("id"))
 	userService := NewService(db.Mysql)
-	err := userService.DeleteUser(userId)
+	err := userService.DeleteUser(userID)
 	if err != nil {
 		fmt.Println("err:", err)
 	}

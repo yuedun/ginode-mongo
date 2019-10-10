@@ -7,10 +7,10 @@ import (
 
 type PostService interface {
 	GetPostInfo() (user Post, err error)
-	GetPostInfoBySql() (user Post, err error)
+	GetPostInfoBySQL() (user Post, err error)
 	CreatePost(user *Post) (err error)
-	UpdatePost(userId int, user *Post) (err error)
-	DeletePost(userId int) (err error)
+	UpdatePost(userID int, user *Post) (err error)
+	DeletePost(userID int) (err error)
 }
 type postService struct {
 	mysql *gorm.DB
@@ -30,7 +30,7 @@ func (u *postService) GetPostInfo() (post Post, err error) {
 	return post, nil
 }
 
-func (u *postService) GetPostInfoBySql() (post Post, err error) {
+func (u *postService) GetPostInfoBySQL() (post Post, err error) {
 	err = u.mysql.Raw("select * from post where id=?", post.Id).Scan(&post).Error
 	if err != nil {
 		return post, err
@@ -47,16 +47,16 @@ func (u *postService) CreatePost(post *Post) (err error) {
 	return nil
 }
 
-func (u *postService) UpdatePost(userId int, post *Post) (err error) {
-	err = u.mysql.Model(post).Where("id = ?", userId).Update(post).Error
+func (u *postService) UpdatePost(userID int, post *Post) (err error) {
+	err = u.mysql.Model(post).Where("id = ?", userID).Update(post).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *postService) DeletePost(userId int) (err error) {
-	u.mysql.Where("id = ?", userId).Delete(Post{})
+func (u *postService) DeletePost(userID int) (err error) {
+	u.mysql.Where("id = ?", userID).Delete(Post{})
 	if err != nil {
 		return err
 	}

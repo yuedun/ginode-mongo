@@ -36,7 +36,7 @@ func GetPostInfo(c *gin.Context) {
 
 func GetPostInfoBySql(c *gin.Context) {
 	userService := NewService(db.Mysql)
-	user, err := userService.GetPostInfoBySql()
+	user, err := userService.GetPostInfoBySQL()
 	if err != nil {
 		fmt.Println("err:", err)
 	}
