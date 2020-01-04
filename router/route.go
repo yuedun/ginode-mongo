@@ -15,7 +15,7 @@ func RouterRegister(router *gin.Engine) {
 	userRouter := router.Group("/user")
 	{
 		userRouter.GET("/index", user.Index)
-		userRouter.GET("/users/:id", middleware.Auth(), user.GetUserInfo)
+		userRouter.GET("/users/:id", middleware.Auth(), user.GetUserInfo)//单独给某个路由添加中间件
 		userRouter.GET("/users-by-sql/:id", user.GetUserInfoBySql)
 		userRouter.POST("/", user.CreateUser)
 		userRouter.PUT("/update/:id", user.UpdateUser)

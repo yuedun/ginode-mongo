@@ -1,7 +1,7 @@
 {
-    "WorkingDir": "E:\\ginode",
+    "WorkingDir": "D:\\goproject\\ginode",
     "SourceDir": [
-        "E:\\ginode"
+        "D:\\goproject\\ginode"
     ],
     "SourceExt": [".c", ".cpp", ".go", ".h"],
     "BuildCmd": "go build",

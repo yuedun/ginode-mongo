@@ -12,17 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//Index
 func Index(c *gin.Context) {
-	namebody := map[string]string{}
+	nameBody := map[string]string{}
 	name := c.Request.Body
-	namebyte, _ := ioutil.ReadAll(name)
-	json.Unmarshal(namebyte, &namebody)
-	fmt.Println(namebody)
+	nameByte, _ := ioutil.ReadAll(name)
+	json.Unmarshal(nameByte, &nameBody)
+	fmt.Println(nameBody)
 	c.JSON(200, gin.H{
-		"message": namebody["name"],
+		"message": nameBody["name"],
 	})
 }
 
+//GetUserInfo
 func GetUserInfo(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("id"))
 	userService := NewUserService(db.Mysql)
@@ -31,11 +33,12 @@ func GetUserInfo(c *gin.Context) {
 		fmt.Println("err:", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"data":    user,
 		"message": "ok",
 	})
 }
 
+//GetUserInfoBySql
 func GetUserInfoBySql(c *gin.Context) {
 	userService := NewService(db.Mysql)
 	user, err := userService.GetUserInfoBySQL()
@@ -47,6 +50,7 @@ func GetUserInfoBySql(c *gin.Context) {
 	})
 }
 
+//CreateUser
 func CreateUser(c *gin.Context) {
 	userService := NewService(db.Mysql)
 	user := User{}
@@ -63,21 +67,30 @@ func CreateUser(c *gin.Context) {
 	})
 }
 
+//UpdateUser post json
 func UpdateUser(c *gin.Context) {
 	userService := NewService(db.Mysql)
-	user := User{}
+	var user User
 	userID, _ := strconv.Atoi(c.Param("id"))
-	user.Addr = c.PostForm("addr")
-	err := userService.UpdateUser(userID, &user)
-	if err != nil {
-		fmt.Println("err:", err)
+	//user.Addr = c.PostForm("addr")
+	if err := c.ShouldBind(&user); err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"data":    nil,
+			"message": "err",
+		})
+	} else {
+		err := userService.UpdateUser(userID, &user)
+		if err != nil {
+			fmt.Println("err:", err)
+		}
+		c.JSON(http.StatusOK, gin.H{
+			"data":    user,
+			"message": "ok",
+		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"data":    user,
-		"message": "ok",
-	})
 }
 
+//DeleteUser
 func DeleteUser(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("id"))
 	userService := NewService(db.Mysql)

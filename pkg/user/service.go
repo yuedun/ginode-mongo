@@ -5,17 +5,20 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-/**
-面向接口开发：
-面向接口开发的好处是要对下面的函数进行测试时，不需要依赖一个全局的mysql连接，只需要调用NewService传一个mysql连接参数即可测试
- */
-type UserService interface {
-	GetUserInfo(userID int) (user User, err error)
-	GetUserInfoBySQL() (user User, err error)
-	CreateUser(user *User) (err error)
-	UpdateUser(userID int, user *User) (err error)
-	DeleteUser(userID int) (err error)
-}
+type (
+	/**
+	  面向接口开发：
+	  面向接口开发的好处是要对下面的函数进行测试时，不需要依赖一个全局的mysql连接，只需要调用NewService传一个mysql连接参数即可测试
+	*/
+	UserService interface {
+		GetUserInfo(userID int) (user User, err error)
+		GetUserInfoBySQL() (user User, err error)
+		CreateUser(user *User) (err error)
+		UpdateUser(userID int, user *User) (err error)
+		DeleteUser(userID int) (err error)
+	}
+)
+
 type userService struct {
 	mysql *gorm.DB
 }
@@ -69,7 +72,7 @@ func (u *userService) DeleteUser(userID int) (err error) {
 }
 
 /**
- 面向接口开发的好处是，如果需要修改方法逻辑，可以在不修改原来逻辑的情况下新增接口实现，在调用的地方使用新的实现即可
+面向接口开发的好处是，如果需要修改方法逻辑，可以在不修改原来逻辑的情况下新增接口实现，在调用的地方使用新的实现即可
 */
 type newUserService struct {
 	userService
@@ -79,11 +82,11 @@ type newUserService struct {
 /*NewUserService 初始化结构体*/
 func NewUserService(mysql *gorm.DB) UserService {
 	return &newUserService{
-		mysql:mysql,
+		mysql: mysql,
 	}
 }
 
-func (u *newUserService) GetUserInfo(userID int) (user User, err error){
+func (u *newUserService) GetUserInfo(userID int) (user User, err error) {
 	err = u.mysql.First(&user, userID).Error
 	if err != nil {
 		return user, err

@@ -12,17 +12,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+//Index
 func Index(c *gin.Context) {
-	namebody := map[string]string{}
+	nameBody := map[string]string{}
 	name := c.Request.Body
-	namebyte, _ := ioutil.ReadAll(name)
-	json.Unmarshal(namebyte, &namebody)
-	fmt.Println(namebody)
+	nameByte, _ := ioutil.ReadAll(name)
+	json.Unmarshal(nameByte, &nameBody)
+	fmt.Println(nameBody)
 	c.JSON(200, gin.H{
-		"message": namebody["name"],
+		"message": nameBody["name"],
 	})
 }
 
+//GetPostInfo
 func GetPostInfo(c *gin.Context) {
 	userService := NewService(db.Mysql)
 	user, err := userService.GetPostInfo()
@@ -34,6 +36,7 @@ func GetPostInfo(c *gin.Context) {
 	})
 }
 
+//GetPostInfoBySql
 func GetPostInfoBySql(c *gin.Context) {
 	userService := NewService(db.Mysql)
 	user, err := userService.GetPostInfoBySQL()
@@ -45,6 +48,7 @@ func GetPostInfoBySql(c *gin.Context) {
 	})
 }
 
+//CreatePost
 func CreatePost(c *gin.Context) {
 	userService := NewService(db.Mysql)
 	user := Post{}
@@ -61,6 +65,7 @@ func CreatePost(c *gin.Context) {
 	})
 }
 
+//UpdatePost
 func UpdatePost(c *gin.Context) {
 	userService := NewService(db.Mysql)
 	user := Post{}
@@ -76,6 +81,7 @@ func UpdatePost(c *gin.Context) {
 	})
 }
 
+//DeletePost
 func DeletePost(c *gin.Context) {
 	userId, _ := strconv.Atoi(c.Param("id"))
 	userService := NewService(db.Mysql)

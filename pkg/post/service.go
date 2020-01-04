@@ -5,13 +5,15 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-type PostService interface {
-	GetPostInfo() (user Post, err error)
-	GetPostInfoBySQL() (user Post, err error)
-	CreatePost(user *Post) (err error)
-	UpdatePost(userID int, user *Post) (err error)
-	DeletePost(userID int) (err error)
-}
+type (
+	PostService interface {
+		GetPostInfo() (user Post, err error)
+		GetPostInfoBySQL() (user Post, err error)
+		CreatePost(user *Post) (err error)
+		UpdatePost(userID int, user *Post) (err error)
+		DeletePost(userID int) (err error)
+	}
+)
 type postService struct {
 	mysql *gorm.DB
 }

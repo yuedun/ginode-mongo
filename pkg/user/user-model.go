@@ -5,14 +5,14 @@ import "time"
 type User struct {
 	Id          int       `json:"id"`
 	Mobile      string    `json:"mobile"`
-	UserName    string    `json:"user_name"`
+	UserName    string    `json:"userName"`
 	Gender      string    `json:"gender"`
 	Addr        string    `json:"addr"`
 	Email       string    `json:"email"`
 	Status      int       `json:"status"`
 	Description string    `json:"description"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 // 设置User的表名为`user`

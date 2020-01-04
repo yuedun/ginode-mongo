@@ -6,19 +6,19 @@ import (
 	_ "github.com/yuedun/ginode/db"
 	"github.com/yuedun/ginode/middleware"
 	"github.com/yuedun/ginode/router"
+	"net/http"
 )
 
 func main() {
 	r := gin.Default()
-	r.Use(middleware.Logger())
-
+	r.Use(middleware.Logger())//全局中间件
+	r.LoadHTMLGlob("templates/*")//加载模板
 	r.GET("/", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "hello gin!!!!!",
-			"code":    0,
+		c.HTML(http.StatusOK, "index.tpl", gin.H{
+			"title": "Hello World!",
 		})
 	})
 
 	router.RouterRegister(r)
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run(":8900") // listen and serve on 0.0.0.0:8080
 }
