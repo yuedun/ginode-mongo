@@ -31,7 +31,7 @@ func GetUserInfo(c *gin.Context) {
 		fmt.Println("err:", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data": user,
+		"data":    user,
 		"message": "ok",
 	})
 }
