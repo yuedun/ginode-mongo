@@ -24,6 +24,26 @@ func Index(c *gin.Context) {
 	})
 }
 
+type loginData struct {
+	UserName string `json:"userName"`
+	Password string `json:"password"`
+}
+
+// 登录
+func Login(c *gin.Context) {
+	obj := loginData{}
+	if err := c.ShouldBind(&obj); err == nil {
+		fmt.Println(obj.UserName)
+		c.JSON(200, gin.H{
+			"token": obj.UserName,
+		})
+	} else {
+		c.JSON(200, gin.H{
+			"message": obj.UserName,
+		})
+	}
+}
+
 //GetUserInfo
 func GetUserInfo(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("id"))

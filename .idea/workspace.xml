@@ -2,11 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9dfc8497-0b77-47ad-b7f3-2da8e282929c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/pkg/website/handler.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/website/service.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pkg/website/website-model.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/util/util.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/mysql.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/mysql.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/logger-middleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/logger-middleware.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/route.go" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -28,6 +39,7 @@
     <option name="urls">
       <list>
         <option value="file://D:/workspace-go" />
+        <option value="file://$PROJECT_DIR$/.." />
       </list>
     </option>
   </component>
@@ -35,9 +47,15 @@
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
   </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="DefaultGoTemplateProperty" value="Go File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="configurable.Global.GOPATH.is.expanded" value="true" />
     <property name="configurable.Module.GOPATH.is.expanded" value="true" />
@@ -49,28 +67,20 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.goide.configuration.GoLibrariesConfigurableProvider" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\goproject\ginode" />
+      <recent name="D:\goproject\ginode\pkg" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\ginode\pkg" />
       <recent name="E:\ginode\db" />
       <recent name="E:\ginode\user" />
     </key>
   </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
-  </component>
-  <component name="RunManager" selected="Go Test.TestGetUser in github.com/yuedun/ginode/tests (1)">
+  <component name="RunManager" selected="Go Build.go build main.go">
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="ginode" />
       <working_directory value="$PROJECT_DIR$" />
@@ -102,6 +112,17 @@
       <pattern value="^TestGetUser$" />
       <method v="2" />
     </configuration>
+    <configuration name="TestGetUser in github.com/yuedun/ginode/tests (2)" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="ginode" />
+      <working_directory value="$PROJECT_DIR$/tests" />
+      <framework value="gotest" />
+      <kind value="PACKAGE" />
+      <package value="github.com/yuedun/ginode/tests" />
+      <directory value="$PROJECT_DIR$/" />
+      <filePath value="$PROJECT_DIR$/" />
+      <pattern value="^TestGetUser$" />
+      <method v="2" />
+    </configuration>
     <configuration name="TestGetUser in github.com/yuedun/ginode/tests" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
       <module name="ginode" />
       <working_directory value="$PROJECT_DIR$/tests" />
@@ -115,10 +136,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build main.go" />
+        <item itemvalue="Go Test.TestGetUser in github.com/yuedun/ginode/tests (2)" />
         <item itemvalue="Go Test.TestGetUser in github.com/yuedun/ginode/tests (1)" />
         <item itemvalue="Go Test.TestGetUser in github.com/yuedun/ginode/tests" />
         <item itemvalue="Go Test.TestCreateUser in github.com/yuedun/ginode/tests" />
-        <item itemvalue="Go Build.go build main.go" />
       </list>
     </recent_temporary>
   </component>
@@ -155,5 +177,43 @@
   <component name="VgoProject">
     <integration-enabled>true</integration-enabled>
     <proxy>direct</proxy>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="740" y="279" key="FileChooserDialogImpl" timestamp="1583460115674">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="740" y="279" key="FileChooserDialogImpl/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1583460115674" />
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom" timestamp="1583396370389">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.bottom/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1583396370389" />
+    <state width="1877" height="285" key="GridCell.Tab.0.center" timestamp="1583396370389">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.center/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1583396370389" />
+    <state width="1877" height="285" key="GridCell.Tab.0.left" timestamp="1583396370389">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.left/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1583396370389" />
+    <state width="1877" height="285" key="GridCell.Tab.0.right" timestamp="1583396370389">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state width="1877" height="285" key="GridCell.Tab.0.right/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1583396370389" />
+    <state x="461" y="166" key="SettingsEditor" timestamp="1585205767398">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="461" y="166" key="SettingsEditor/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1585205767398" />
+    <state x="626" y="164" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1585205581806">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="626" y="164" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1585205581806" />
+    <state x="636" y="124" width="647" height="801" key="find.popup" timestamp="1585205603186">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="636" y="124" width="647" height="801" key="find.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1585205603186" />
+    <state x="616" y="178" width="672" height="676" key="search.everywhere.popup" timestamp="1585207298881">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="616" y="178" width="672" height="676" key="search.everywhere.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1585207298881" />
   </component>
 </project>

@@ -1,12 +1,18 @@
 package db
 
-import "github.com/jinzhu/gorm"
+import (
+	"fmt"
+	"github.com/jinzhu/gorm"
+	"github.com/yuedun/ginode/util"
+)
 
 var Mysql *gorm.DB
 
 func init() {
 	var err error
-	Mysql, err = gorm.Open("mysql", "root:root@/issue?charset=utf8&parseTime=True&loc=Local")
+	conf := util.Conf{}
+	c := conf.GetConf()
+	Mysql, err = gorm.Open("mysql", fmt.Sprintf("%v:%v@/%v?charset=utf8&parseTime=True&loc=Local", c.User, c.Pwd, c.Dbname))
 	if err != nil {
 		panic(err)
 	}

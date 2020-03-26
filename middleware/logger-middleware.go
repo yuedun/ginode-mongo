@@ -17,7 +17,7 @@ func Logger() gin.HandlerFunc {
 		c.Set("example", "12345")
 
 		// 设置cookie
-		c.SetCookie("user_name", "yuedun", 3600, "/", "localhost", false, true)
+		c.SetCookie("user_name", "yuedun", 3600, "/", "localhost", http.SameSiteDefaultMode, true, true)
 
 		// 请求前
 
