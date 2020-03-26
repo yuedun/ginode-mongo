@@ -36,7 +36,16 @@ func Logger() gin.HandlerFunc {
 // 权限校验
 func Auth() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		if c.Query("a") == "1" {
+		token, err := c.Cookie("token")
+		if err != nil {
+			c.Abort() //不继续执行
+			c.JSON(http.StatusForbidden, gin.H{
+				"message": err.Error(),
+			})
+			return
+		}
+		log.Println(">>>", token)
+		if token == "" {
 			log.Print("权限验证未通过")
 			c.Abort() //不继续执行
 			c.JSON(http.StatusForbidden, gin.H{

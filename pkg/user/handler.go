@@ -35,7 +35,7 @@ func Login(c *gin.Context) {
 	if err := c.ShouldBind(&obj); err == nil {
 		fmt.Println(obj.UserName)
 		c.JSON(200, gin.H{
-			"token": obj.UserName,
+			"token": "klsdjgfngon",
 		})
 	} else {
 		c.JSON(200, gin.H{

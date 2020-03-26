@@ -3,7 +3,7 @@
     "SourceDir": [
         "D:\\goproject\\ginode"
     ],
-    "SourceExt": [".c", ".cpp", ".go", ".h"],
+    "SourceExt": [".go"],
     "BuildCmd": "go build",
     "RunCmd": "ginode.exe",
     "Decreasing": 1

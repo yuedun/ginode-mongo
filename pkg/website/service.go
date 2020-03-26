@@ -7,11 +7,10 @@ import (
 
 type (
 	WebsiteService interface {
-		GetPostInfo() (website Website, err error)
-		GetPostInfoBySQL() (website Website, err error)
-		CreatePost(website *Website) (err error)
-		UpdatePost(websiteID int, website *Website) (err error)
-		DeletePost(websiteID int) (err error)
+		GetWebsiteList(offset, limit int) (website []Website, err error)
+		CreateWebsite(website *Website) (err error)
+		UpdateWebsite(website *Website) (err error)
+		DeleteWebsite(websiteID int) (err error)
 	}
 )
 type websiteService struct {
@@ -24,40 +23,32 @@ func NewService(mysql *gorm.DB) WebsiteService {
 	}
 }
 
-func (u *websiteService) GetPostInfo() (post Website, err error) {
-	err = u.mysql.First(&post).Error
+func (u *websiteService) GetWebsiteList(offset, limit int) (websites []Website, err error) {
+	err = u.mysql.Where("status = ?", 1).Offset(offset).Limit(limit).Find(&websites).Error
 	if err != nil {
-		return post, err
+		return websites, err
 	}
-	return post, nil
+	return websites, nil
 }
 
-func (u *websiteService) GetPostInfoBySQL() (post Website, err error) {
-	err = u.mysql.Raw("select * from post where id=?", post.Id).Scan(&post).Error
-	if err != nil {
-		return post, err
-	}
-	return post, nil
-}
-
-func (u *websiteService) CreatePost(post *Website) (err error) {
-	err = u.mysql.Create(post).Error
-	fmt.Println(post)
+func (u *websiteService) CreateWebsite(website *Website) (err error) {
+	err = u.mysql.Create(website).Error
+	fmt.Println(website)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *websiteService) UpdatePost(websiteID int, post *Website) (err error) {
-	err = u.mysql.Model(post).Where("id = ?", websiteID).Update(post).Error
+func (u *websiteService) UpdateWebsite(website *Website) (err error) {
+	err = u.mysql.Model(website).Update(website).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *websiteService) DeletePost(websiteID int) (err error) {
+func (u *websiteService) DeleteWebsite(websiteID int) (err error) {
 	u.mysql.Where("id = ?", websiteID).Delete(Website{})
 	if err != nil {
 		return err

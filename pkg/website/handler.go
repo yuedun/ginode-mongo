@@ -1,10 +1,8 @@
 package website
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/yuedun/ginode/db"
-	"io/ioutil"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,84 +10,72 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Index
-func Index(c *gin.Context) {
-	nameBody := map[string]string{}
-	name := c.Request.Body
-	nameByte, _ := ioutil.ReadAll(name)
-	json.Unmarshal(nameByte, &nameBody)
-	fmt.Println(nameBody)
-	c.JSON(200, gin.H{
-		"message": nameBody["name"],
+//WebsiteList列表
+func WebsiteList(c *gin.Context) {
+	offset, _ := strconv.Atoi(c.Query("offset"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
+	wbService := NewService(db.Mysql)
+	webs, err := wbService.GetWebsiteList(offset, limit)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+		"data":    webs,
 	})
 }
 
-//GetPostInfo
-func GetPostInfo(c *gin.Context) {
-	userService := NewService(db.Mysql)
-	user, err := userService.GetPostInfo()
+//Create
+func Create(c *gin.Context) {
+	websiteService := NewService(db.Mysql)
+	wbObj := Website{}
+	c.BindJSON(&wbObj)
+	wbObj.CreatedAt = time.Now()
+	wbObj.Status = 1
+	err := websiteService.CreateWebsite(&wbObj)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"message": user,
-	})
-}
-
-//GetPostInfoBySql
-func GetPostInfoBySql(c *gin.Context) {
-	userService := NewService(db.Mysql)
-	user, err := userService.GetPostInfoBySQL()
-	if err != nil {
-		fmt.Println("err:", err)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": user,
-	})
-}
-
-//CreatePost
-func CreatePost(c *gin.Context) {
-	userService := NewService(db.Mysql)
-	user := Post{}
-	fmt.Println(">>>", c.PostForm("mobile"))
-	user.Mobile = c.PostForm("mobile")
-	user.CreatedAt = time.Now()
-	err := userService.CreatePost(&user)
-	if err != nil {
-		fmt.Println("err:", err)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"data":    user,
+		"data":    wbObj,
 		"message": "ok",
 	})
 }
 
-//UpdatePost
-func UpdatePost(c *gin.Context) {
-	userService := NewService(db.Mysql)
-	user := Post{}
-	userId, _ := strconv.Atoi(c.Param("id"))
-	user.Addr = c.PostForm("addr")
-	err := userService.UpdatePost(userId, &user)
+//Update
+func Update(c *gin.Context) {
+	websiteService := NewService(db.Mysql)
+	website := Website{}
+	c.BindJSON(&website)
+	err := websiteService.UpdateWebsite(&website)
 	if err != nil {
 		fmt.Println("err:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"data":    website,
+			"message": "ok",
+		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"data":    user,
-		"message": "ok",
-	})
 }
 
-//DeletePost
-func DeletePost(c *gin.Context) {
-	userId, _ := strconv.Atoi(c.Param("id"))
-	userService := NewService(db.Mysql)
-	err := userService.DeletePost(userId)
+//Delete
+func Delete(c *gin.Context) {
+	websiteId, _ := strconv.Atoi(c.Param("id"))
+	websiteService := NewService(db.Mysql)
+	err := websiteService.DeleteWebsite(websiteId)
 	if err != nil {
 		fmt.Println("err:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "ok",
+		})
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": "ok",
-	})
 }

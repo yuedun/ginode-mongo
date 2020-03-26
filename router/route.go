@@ -5,6 +5,7 @@ import (
 	"github.com/yuedun/ginode/middleware"
 	"github.com/yuedun/ginode/pkg/post"
 	"github.com/yuedun/ginode/pkg/user"
+	"github.com/yuedun/ginode/pkg/website"
 )
 
 /**
@@ -25,13 +26,12 @@ func Register(router *gin.Engine) {
 	}
 	//website路由注册
 	websiteRouter := router.Group("/website")
+	websiteRouter.Use(middleware.Auth())
 	{
-		websiteRouter.GET("/", post.Index)
-		websiteRouter.GET("/posts/:id", middleware.Auth(), post.GetPostInfo)
-		websiteRouter.GET("/posts-by-sql/:id", post.GetPostInfoBySql)
-		websiteRouter.POST("/", post.CreatePost)
-		websiteRouter.PUT("/:id", post.UpdatePost)
-		websiteRouter.DELETE("/:id", post.DeletePost)
+		websiteRouter.GET("/", website.WebsiteList)
+		websiteRouter.POST("/create", website.Create)
+		websiteRouter.PUT("/update", website.Update)
+		websiteRouter.DELETE("/delete/:id", website.Delete)
 	}
 	//user路由注册
 	postRouter := router.Group("/post")
