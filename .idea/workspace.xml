@@ -2,13 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9dfc8497-0b77-47ad-b7f3-2da8e282929c" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/middleware/middleware.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dogo.json" beforeDir="false" afterPath="$PROJECT_DIR$/dogo.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/middleware/logger-middleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/logger-middleware.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/user/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/website/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/handler.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/website/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/website/website-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/website-model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/logger-middleware.go" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/route.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -204,9 +202,14 @@
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="636" y="124" width="647" height="801" key="find.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1585205603186" />
-    <state x="616" y="178" width="672" height="676" key="search.everywhere.popup" timestamp="1585207298881">
+    <state x="616" y="178" width="672" height="676" key="search.everywhere.popup" timestamp="1585323691556">
       <screen x="0" y="0" width="1920" height="1050" />
     </state>
     <state x="616" y="178" width="672" height="676" key="search.everywhere.popup/0.0.1920.1050/1920.0.1920.1050@0.0.1920.1050" timestamp="1585207298881" />
+    <state x="616" y="178" width="672" height="676" key="search.everywhere.popup/0.0.1920.1050@0.0.1920.1050" timestamp="1585323691556" />
+    <state x="682" y="436" key="vcs.readOnlyHandler.ReadOnlyStatusDialog" timestamp="1585288624102">
+      <screen x="0" y="0" width="1920" height="1050" />
+    </state>
+    <state x="682" y="436" key="vcs.readOnlyHandler.ReadOnlyStatusDialog/0.0.1920.1050@0.0.1920.1050" timestamp="1585288624102" />
   </component>
 </project>

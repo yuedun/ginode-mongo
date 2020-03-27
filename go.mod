@@ -4,7 +4,8 @@ go 1.14
 
 require (
 	cloud.google.com/go v0.41.0 // indirect
-	github.com/gin-gonic/gin v1.6.1
+	github.com/appleboy/gin-jwt/v2 v2.6.3
+	github.com/gin-gonic/gin v1.6.2
 	github.com/go-playground/universal-translator v0.17.0 // indirect
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/protobuf v1.3.5 // indirect

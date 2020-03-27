@@ -17,7 +17,10 @@ func Register(router *gin.Engine) {
 	userRouter.Use(middleware.Logger())
 	{
 		userRouter.GET("/index", user.Index)
-		userRouter.POST("/login", user.Login)
+		//userRouter.POST("/login", user.Login)
+		userRouter.POST("/login", middleware.Jwt().LoginHandler)
+		userRouter.GET("/refresh_token", middleware.Jwt().RefreshHandler)// 刷新token
+		userRouter.GET("/logout", middleware.Jwt().LogoutHandler)
 		userRouter.GET("/users/:id", middleware.Auth(), user.GetUserInfo) //单独给某个路由添加中间件
 		userRouter.GET("/users-by-sql/:id", user.GetUserInfoBySql)
 		userRouter.POST("/", user.CreateUser)
@@ -26,7 +29,7 @@ func Register(router *gin.Engine) {
 	}
 	//website路由注册
 	websiteRouter := router.Group("/website")
-	websiteRouter.Use(middleware.Auth())
+	websiteRouter.Use(middleware.Jwt().MiddlewareFunc())
 	{
 		websiteRouter.GET("/", website.WebsiteList)
 		websiteRouter.POST("/create", website.Create)
