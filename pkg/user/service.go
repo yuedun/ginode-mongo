@@ -11,7 +11,7 @@ type (
 	  面向接口开发的好处是要对下面的函数进行测试时，不需要依赖一个全局的mysql连接，只需要调用NewService传一个mysql连接参数即可测试
 	*/
 	UserService interface {
-		GetUserInfo(userID int) (user User, err error)
+		GetUserInfo(userObj User) (user User, err error)
 		GetUserInfoBySQL() (user User, err error)
 		CreateUser(user *User) (err error)
 		UpdateUser(userID int, user *User) (err error)
@@ -30,8 +30,8 @@ func NewService(mysql *gorm.DB) UserService {
 	}
 }
 
-func (u *userService) GetUserInfo(userID int) (user User, err error) {
-	err = u.mysql.First(&user, userID).Error
+func (u *userService) GetUserInfo(userObj User) (user User, err error) {
+	err = u.mysql.Where(userObj).Find(&user).Error
 	if err != nil {
 		return user, err
 	}
@@ -86,8 +86,8 @@ func NewUserService(mysql *gorm.DB) UserService {
 	}
 }
 
-func (u *newUserService) GetUserInfo(userID int) (user User, err error) {
-	err = u.mysql.First(&user, userID).Error
+func (u *newUserService) GetUserInfo(userObj User) (user User, err error) {
+	err = u.mysql.First(&user).Error
 	if err != nil {
 		return user, err
 	}

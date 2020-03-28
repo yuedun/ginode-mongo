@@ -29,26 +29,18 @@ type loginData struct {
 	Password string `json:"password"`
 }
 
-// 登录
-func Login(c *gin.Context) {
-	obj := loginData{}
-	if err := c.ShouldBind(&obj); err == nil {
-		fmt.Println(obj.UserName)
-		c.JSON(200, gin.H{
-			"token": "klsdjgfngon",
-		})
-	} else {
-		c.JSON(200, gin.H{
-			"message": obj.UserName,
-		})
-	}
-}
-
 //GetUserInfo
 func GetUserInfo(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("id"))
+	username := c.Param("username")
+	mobile := c.Param("mobile")
 	userService := NewUserService(db.Mysql)
-	user, err := userService.GetUserInfo(userID)
+	userObj := User{
+		Id:       userID,
+		UserName: username,
+		Mobile:   mobile,
+	}
+	user, err := userService.GetUserInfo(userObj)
 	if err != nil {
 		fmt.Println("err:", err)
 	}

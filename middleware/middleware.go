@@ -2,6 +2,8 @@ package middleware
 
 import (
 	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/yuedun/ginode/db"
+	"github.com/yuedun/ginode/pkg/user"
 	"log"
 	"net/http"
 	"time"
@@ -61,8 +63,7 @@ func Auth() gin.HandlerFunc {
 
 type User struct {
 	UserName  string
-	FirstName string
-	LastName  string
+	LoginTime time.Time
 }
 type login struct {
 	Username string `form:"username" json:"username" binding:"required"`
@@ -70,7 +71,7 @@ type login struct {
 }
 
 func Jwt() *jwt.GinJWTMiddleware {
-	var identityKey = "id"
+	var identityKey = "username"
 	// the jwt middleware
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "test zone",
@@ -78,6 +79,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 		Timeout:     time.Hour,
 		MaxRefresh:  time.Hour,
 		IdentityKey: identityKey,
+		// 登录验证成功后存储用户信息
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*User); ok {
 				return jwt.MapClaims{
@@ -86,30 +88,42 @@ func Jwt() *jwt.GinJWTMiddleware {
 			}
 			return jwt.MapClaims{}
 		},
+		//获取用户信息
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &User{
-				UserName: claims[identityKey].(string),
+				UserName:  claims[identityKey].(string),
 			}
 		},
+		// 首次通过用户名密码登录认证
 		Authenticator: func(c *gin.Context) (interface{}, error) {
 			var loginVals login
 			if err := c.ShouldBind(&loginVals); err != nil {
 				return "", jwt.ErrMissingLoginValues
 			}
-			userID := loginVals.Username
+			username := loginVals.Username
 			password := loginVals.Password
-			log.Println(">>>>>>>>>", userID, password)
-			if (userID == "admin" && password == "admin") || (userID == "test" && password == "test") {
+			log.Println(">>>>>>>>>", username, password)
+			userService := user.NewService(db.Mysql)
+			userObj := user.User{
+				UserName: username,
+			}
+			user, err := userService.GetUserInfo(userObj)
+			if err != nil {
+				return nil, jwt.ErrFailedAuthentication
+			}
+			log.Println("user:", user)
+			if (user.UserName == "admin" && user.Password == password) || (username == "test" && password == "test") {
+				// 返回的数据用在上面定义的PayloadFunc函数中
 				return &User{
-					UserName:  userID,
-					LastName:  "Bo-Yi",
-					FirstName: "Wu",
+					UserName:  username,
+					LoginTime: time.Now(),
 				}, nil
 			}
 
 			return nil, jwt.ErrFailedAuthentication
 		},
+		// 登录以后通过token来获取用户标识，检测是否通过认证
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			if v, ok := data.(*User); ok && v.UserName == "test" {
 				return true
@@ -117,6 +131,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 
 			return false
 		},
+		// 获取不到token或解析token失败时如何返回信息
 		Unauthorized: func(c *gin.Context, code int, message string) {
 			c.JSON(code, gin.H{
 				"code":    code,
