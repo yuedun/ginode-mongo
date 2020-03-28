@@ -12,10 +12,23 @@ import (
 
 //WebsiteList列表
 func WebsiteList(c *gin.Context) {
-	offset, _ := strconv.Atoi(c.Query("offset"))
-	limit, _ := strconv.Atoi(c.Query("limit"))
+	offset, err := strconv.Atoi(c.Query("offset"))
+	if err != nil {
+		offset = 0
+	}
+	limit, err := strconv.Atoi(c.Query("limit"))
+	if err != nil {
+		limit = 10
+	}
+	name := c.Query("name")
+	category := c.Query("category")
+	websiteSearch := Website{
+		Name:     name,
+		Category: category,
+		Status:   1,
+	}
 	wbService := NewService(db.Mysql)
-	webs, err := wbService.GetWebsiteList(offset, limit)
+	webs, err := wbService.GetWebsiteList(offset, limit, websiteSearch)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),

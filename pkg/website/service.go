@@ -7,7 +7,7 @@ import (
 
 type (
 	WebsiteService interface {
-		GetWebsiteList(offset, limit int) (website []Website, err error)
+		GetWebsiteList(offset, limit int, search Website) (website []Website, err error)
 		CreateWebsite(website *Website) (err error)
 		UpdateWebsite(website *Website) (err error)
 		DeleteWebsite(websiteID int) (err error)
@@ -23,8 +23,14 @@ func NewService(mysql *gorm.DB) WebsiteService {
 	}
 }
 
-func (u *websiteService) GetWebsiteList(offset, limit int) (websites []Website, err error) {
-	err = u.mysql.Where("status = ?", 1).Offset(offset).Limit(limit).Find(&websites).Error
+func (u *websiteService) GetWebsiteList(offset, limit int, search Website) (websites []Website, err error) {
+	if search.Name != "" {
+		u.mysql = u.mysql.Where("name like ?", search.Name+"%")
+	}
+	if search.Category != "" {
+		u.mysql = u.mysql.Where("category =?", search.Category)
+	}
+	err = u.mysql.Offset(offset).Limit(limit).Find(&websites).Error
 	if err != nil {
 		return websites, err
 	}

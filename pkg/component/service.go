@@ -7,7 +7,7 @@ import (
 
 type (
 	ComponentService interface {
-		GetComponentList(offset, limit int) (component []Component, err error)
+		GetComponentList(offset, limit int, search Component) (component []Component, err error)
 		CreateComponent(component *Component) (err error)
 		UpdateComponent(component *Component) (err error)
 		DeleteComponent(componentID int) (err error)
@@ -23,8 +23,14 @@ func NewService(mysql *gorm.DB) ComponentService {
 	}
 }
 
-func (u *componentService) GetComponentList(offset, limit int) (components []Component, err error) {
-	err = u.mysql.Where("status = ?", 1).Offset(offset).Limit(limit).Find(&components).Error
+func (u *componentService) GetComponentList(offset, limit int, search Component) (components []Component, err error) {
+	if search.Name != "" {
+		u.mysql = u.mysql.Where("name like ?", search.Name+"%")
+	}
+	if search.Category != "" {
+		u.mysql = u.mysql.Where("category = ?", search.Category)
+	}
+	err = u.mysql.Offset(offset).Limit(limit).Find(&components).Error
 	if err != nil {
 		return components, err
 	}
