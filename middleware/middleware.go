@@ -76,8 +76,8 @@ func Jwt() *jwt.GinJWTMiddleware {
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "test zone",
 		Key:         []byte("secret key"),
-		Timeout:     time.Hour,
-		MaxRefresh:  time.Hour,
+		Timeout:     time.Hour * 24 * 3,
+		MaxRefresh:  time.Hour * 24 * 3,
 		IdentityKey: identityKey,
 		// 登录验证成功后存储用户信息
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
@@ -92,7 +92,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &User{
-				UserName:  claims[identityKey].(string),
+				UserName: claims[identityKey].(string),
 			}
 		},
 		// 首次通过用户名密码登录认证
@@ -103,7 +103,6 @@ func Jwt() *jwt.GinJWTMiddleware {
 			}
 			username := loginVals.Username
 			password := loginVals.Password
-			log.Println(">>>>>>>>>", username, password)
 			userService := user.NewService(db.Mysql)
 			userObj := user.User{
 				UserName: username,
@@ -112,7 +111,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 			if err != nil {
 				return nil, jwt.ErrFailedAuthentication
 			}
-			log.Println("user:", user)
+
 			if (user.UserName == "admin" && user.Password == password) || (username == "test" && password == "test") {
 				// 返回的数据用在上面定义的PayloadFunc函数中
 				return &User{

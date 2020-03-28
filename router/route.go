@@ -3,6 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/yuedun/ginode/middleware"
+	"github.com/yuedun/ginode/pkg/component"
 	"github.com/yuedun/ginode/pkg/post"
 	"github.com/yuedun/ginode/pkg/user"
 	"github.com/yuedun/ginode/pkg/website"
@@ -35,6 +36,15 @@ func Register(router *gin.Engine) {
 		websiteRouter.POST("/create", website.Create)
 		websiteRouter.PUT("/update", website.Update)
 		websiteRouter.DELETE("/delete/:id", website.Delete)
+	}
+	//component路由注册
+	componentRouter := router.Group("/component")
+	componentRouter.Use(middleware.Jwt().MiddlewareFunc())
+	{
+		componentRouter.GET("/", component.ComponentList)
+		componentRouter.POST("/create", component.Create)
+		componentRouter.PUT("/update", component.Update)
+		componentRouter.DELETE("/delete/:id", component.Delete)
 	}
 	//user路由注册
 	postRouter := router.Group("/post")
