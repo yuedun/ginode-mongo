@@ -43,6 +43,8 @@ func RouterRegister(router *gin.Engine) {
 本项目只是一个示例项目，模块较少，只开设了两个模块，`user`和`post`，注册路由的时候就可以按照不同的职责来分组注册，`pkg`目录下放置的就是不同职责的模块。
 将来需要对服务进行拆分的时候只需要将`pkg`目录下的模块分离出去即可形成独立的服务，对依赖的的修改也较少。如果使用的MVC架构的话，要对不同职责的服务进行拆分则很困难，需要对每一层中对应的文件都拿出来重新组织。
 
+### 请求参数绑定
+推荐使用**ShouldBind***，因为**Bind***是必须绑定，所有参数需要一致。
 ```shell script
 golang.org/x/text => github.com/golang/text latest
 

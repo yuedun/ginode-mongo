@@ -33,6 +33,7 @@ func WebsiteList(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
@@ -44,12 +45,17 @@ func WebsiteList(c *gin.Context) {
 func Create(c *gin.Context) {
 	websiteService := NewService(db.Mysql)
 	wbObj := Website{}
-	c.BindJSON(&wbObj)
+	c.ShouldBind(&wbObj)
 	wbObj.CreatedAt = time.Now()
 	wbObj.Status = 1
 	err := websiteService.CreateWebsite(&wbObj)
 	if err != nil {
 		fmt.Println("err:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"data":    wbObj,
+			"message": "ok",
+		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"data":    wbObj,
@@ -61,13 +67,14 @@ func Create(c *gin.Context) {
 func Update(c *gin.Context) {
 	websiteService := NewService(db.Mysql)
 	website := Website{}
-	c.BindJSON(&website)
+	c.ShouldBind(&website)
 	err := websiteService.UpdateWebsite(&website)
 	if err != nil {
 		fmt.Println("err:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"data":    website,
@@ -86,6 +93,7 @@ func Delete(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "ok",

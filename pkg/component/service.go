@@ -1,7 +1,6 @@
 package component
 
 import (
-	"fmt"
 	"github.com/jinzhu/gorm"
 )
 
@@ -38,8 +37,8 @@ func (u *componentService) GetComponentList(offset, limit int, search Component)
 }
 
 func (u *componentService) CreateComponent(component *Component) (err error) {
+	// using unaddressable value Create(指针类型)
 	err = u.mysql.Create(component).Error
-	fmt.Println(component)
 	if err != nil {
 		return err
 	}

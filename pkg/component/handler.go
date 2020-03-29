@@ -33,6 +33,7 @@ func ComponentList(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
@@ -44,12 +45,24 @@ func ComponentList(c *gin.Context) {
 func Create(c *gin.Context) {
 	componentService := NewService(db.Mysql)
 	wbObj := Component{}
-	c.BindJSON(&wbObj)
+	err := c.ShouldBind(&wbObj)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"data":    wbObj,
+			"message": err.Error(),
+		})
+		return
+	}
 	wbObj.CreatedAt = time.Now()
 	wbObj.Status = 1
-	err := componentService.CreateComponent(&wbObj)
+	err = componentService.CreateComponent(&wbObj)
 	if err != nil {
 		fmt.Println("err:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"data":    wbObj,
+			"message": err.Error(),
+		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"data":    wbObj,
@@ -61,13 +74,14 @@ func Create(c *gin.Context) {
 func Update(c *gin.Context) {
 	componentService := NewService(db.Mysql)
 	component := Component{}
-	c.BindJSON(&component)
+	c.ShouldBind(&component)
 	err := componentService.UpdateComponent(&component)
 	if err != nil {
 		fmt.Println("err:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"data":    component,
@@ -86,6 +100,7 @@ func Delete(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
+		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"message": "ok",
