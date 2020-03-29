@@ -2,11 +2,12 @@ package component
 
 import (
 	"github.com/jinzhu/gorm"
+	"sync"
 )
 
 type (
 	ComponentService interface {
-		GetComponentList(offset, limit int, search Component) (component []Component, err error)
+		GetComponentList(offset, limit int, search Component) (component []Component, count int, err error)
 		CreateComponent(component *Component) (err error)
 		UpdateComponent(component *Component) (err error)
 		DeleteComponent(componentID int) (err error)
@@ -22,18 +23,25 @@ func NewService(mysql *gorm.DB) ComponentService {
 	}
 }
 
-func (u *componentService) GetComponentList(offset, limit int, search Component) (components []Component, err error) {
+func (u *componentService) GetComponentList(offset, limit int, search Component) (components []Component, count int, err error) {
 	if search.Name != "" {
 		u.mysql = u.mysql.Where("name like ?", search.Name+"%")
 	}
 	if search.Category != "" {
 		u.mysql = u.mysql.Where("category = ?", search.Category)
 	}
-	err = u.mysql.Offset(offset).Limit(limit).Find(&components).Error
-	if err != nil {
-		return components, err
-	}
-	return components, nil
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		err = u.mysql.Offset(offset).Limit(limit).Find(&components).Error
+	}()
+	go func() {
+		defer wg.Done()
+		err = u.mysql.Model(&Component{}).Count(&count).Error
+	}()
+	wg.Wait()
+	return components, count, err
 }
 
 func (u *componentService) CreateComponent(component *Component) (err error) {

@@ -3,11 +3,12 @@ package website
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"sync"
 )
 
 type (
 	WebsiteService interface {
-		GetWebsiteList(offset, limit int, search Website) (website []Website, err error)
+		GetWebsiteList(offset, limit int, search Website) (website []Website, count int, err error)
 		CreateWebsite(website *Website) (err error)
 		UpdateWebsite(website *Website) (err error)
 		DeleteWebsite(websiteID int) (err error)
@@ -23,18 +24,26 @@ func NewService(mysql *gorm.DB) WebsiteService {
 	}
 }
 
-func (u *websiteService) GetWebsiteList(offset, limit int, search Website) (websites []Website, err error) {
+func (u *websiteService) GetWebsiteList(offset, limit int, search Website) (websites []Website, count int, err error) {
 	if search.Name != "" {
 		u.mysql = u.mysql.Where("name like ?", search.Name+"%")
 	}
 	if search.Category != "" {
 		u.mysql = u.mysql.Where("category =?", search.Category)
 	}
-	err = u.mysql.Offset(offset).Limit(limit).Find(&websites).Error
-	if err != nil {
-		return websites, err
-	}
-	return websites, nil
+
+	var wg sync.WaitGroup
+	wg.Add(2)
+	go func() {
+		defer wg.Done()
+		err = u.mysql.Offset(offset).Limit(limit).Find(&websites).Error
+	}()
+	go func() {
+		defer wg.Done()
+		err = u.mysql.Model(&Website{}).Count(&count).Error
+	}()
+	wg.Wait()
+	return websites, count, err
 }
 
 func (u *websiteService) CreateWebsite(website *Website) (err error) {

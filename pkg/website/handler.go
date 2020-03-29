@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type any = interface{}
+
 //WebsiteList列表
 func WebsiteList(c *gin.Context) {
 	offset, err := strconv.Atoi(c.Query("offset"))
@@ -28,7 +30,11 @@ func WebsiteList(c *gin.Context) {
 		Status:   1,
 	}
 	wbService := NewService(db.Mysql)
-	webs, err := wbService.GetWebsiteList(offset, limit, websiteSearch)
+	list, total, err := wbService.GetWebsiteList(offset, limit, websiteSearch)
+	data := map[string]any{
+		"result": list,
+		"count":  total,
+	}
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -37,7 +43,7 @@ func WebsiteList(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
-		"data":    webs,
+		"data":    data,
 	})
 }
 

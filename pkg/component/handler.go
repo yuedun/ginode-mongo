@@ -10,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type any = interface{}
+
 //ComponentList列表
 func ComponentList(c *gin.Context) {
 	offset, err := strconv.Atoi(c.Query("offset"))
@@ -28,16 +30,20 @@ func ComponentList(c *gin.Context) {
 		Status:   1,
 	}
 	wbService := NewService(db.Mysql)
-	webs, err := wbService.GetComponentList(offset, limit, componentSearch)
+	list, total, err := wbService.GetComponentList(offset, limit, componentSearch)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
 		return
 	}
+	data := map[string]any{
+		"result": list,
+		"count":  total,
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
-		"data":    webs,
+		"data":    data,
 	})
 }
 
