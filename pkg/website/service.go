@@ -3,7 +3,6 @@ package website
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
-	"sync"
 )
 
 type (
@@ -26,23 +25,13 @@ func NewService(mysql *gorm.DB) WebsiteService {
 
 func (u *websiteService) GetWebsiteList(offset, limit int, search Website) (websites []Website, count int, err error) {
 	if search.Name != "" {
-		u.mysql = u.mysql.Where("name like ?", search.Name+"%")
+		u.mysql = u.mysql.Where("name LIKE ?", search.Name+"%")
 	}
 	if search.Category != "" {
 		u.mysql = u.mysql.Where("category =?", search.Category)
 	}
 
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		err = u.mysql.Offset(offset).Limit(limit).Find(&websites).Error
-	}()
-	go func() {
-		defer wg.Done()
-		err = u.mysql.Model(&Website{}).Count(&count).Error
-	}()
-	wg.Wait()
+	err = u.mysql.Offset(offset).Limit(limit).Find(&websites).Offset(-1).Limit(-1).Count(&count).Error
 	return websites, count, err
 }
 

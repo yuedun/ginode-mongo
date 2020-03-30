@@ -2,7 +2,6 @@ package component
 
 import (
 	"github.com/jinzhu/gorm"
-	"sync"
 )
 
 type (
@@ -25,22 +24,12 @@ func NewService(mysql *gorm.DB) ComponentService {
 
 func (u *componentService) GetComponentList(offset, limit int, search Component) (components []Component, count int, err error) {
 	if search.Name != "" {
-		u.mysql = u.mysql.Where("name like ?", search.Name+"%")
+		u.mysql = u.mysql.Where("name LIKE ?", search.Name+"%")
 	}
 	if search.Category != "" {
 		u.mysql = u.mysql.Where("category = ?", search.Category)
 	}
-	var wg sync.WaitGroup
-	wg.Add(2)
-	go func() {
-		defer wg.Done()
-		err = u.mysql.Offset(offset).Limit(limit).Find(&components).Error
-	}()
-	go func() {
-		defer wg.Done()
-		err = u.mysql.Model(&Component{}).Count(&count).Error
-	}()
-	wg.Wait()
+	err = u.mysql.Offset(offset).Limit(limit).Find(&components).Offset(-1).Limit(-1).Count(&count).Error
 	return components, count, err
 }
 
