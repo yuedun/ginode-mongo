@@ -1,12 +1,13 @@
 package middleware
 
 import (
-	jwt "github.com/appleboy/gin-jwt/v2"
-	"github.com/yuedun/ginode/db"
-	"github.com/yuedun/ginode/pkg/user"
 	"log"
 	"net/http"
 	"time"
+
+	jwt "github.com/appleboy/gin-jwt/v2"
+	"github.com/yuedun/ginode/db"
+	"github.com/yuedun/ginode/pkg/user"
 
 	"github.com/gin-gonic/gin"
 )
@@ -155,6 +156,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 
 		// TimeFunc provides the current time. You can override it to use another time value. This is useful for testing or if your server uses a different time zone than your tokens.
 		TimeFunc: time.Now,
+		//LoginHandler,LogoutHandler等handler中间件会默认提供，但其返回的数据格式并不一定符合项目规范，也可以在此处自定义，像上面Unauthorized这样
 	})
 
 	if err != nil {
