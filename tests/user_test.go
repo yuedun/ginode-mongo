@@ -1,15 +1,15 @@
 package tests
 
 import (
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"github.com/yuedun/ginode/db"
-	"github.com/yuedun/ginode/pkg/user"
+	"github.com/yuedun/ginode-mongo/db"
+	_ "github.com/yuedun/ginode-mongo/db"
+	"github.com/yuedun/ginode-mongo/pkg/user"
 	"testing"
 )
 
 func TestGetUser(t *testing.T) {
-	userService := user.NewService(db.Mysql)
-	user, err := userService.GetUserInfo(1)
+	userService := user.NewService(db.Mongodb)
+	user, err := userService.GetUserInfo(user.User{})
 	if err != nil {
 		t.Error(err)
 	}
@@ -17,7 +17,7 @@ func TestGetUser(t *testing.T) {
 }
 
 func TestCreateUser(t *testing.T) {
-	userService := user.NewService(db.Mysql)
+	userService := user.NewService(db.Mongodb)
 	newUser := new(user.User)
 	newUser.Mobile = "17864345978"
 	err := userService.CreateUser(newUser)

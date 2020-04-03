@@ -12,4 +12,4 @@
 *.out
 
 conf.yaml
-ginode
+ginode-mongo

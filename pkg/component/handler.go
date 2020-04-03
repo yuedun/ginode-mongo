@@ -2,7 +2,7 @@ package component
 
 import (
 	"fmt"
-	"github.com/yuedun/ginode/db"
+	"github.com/yuedun/ginode-mongo/db"
 	"net/http"
 	"strconv"
 	"time"
@@ -29,7 +29,7 @@ func ComponentList(c *gin.Context) {
 		Category: category,
 		Status:   1,
 	}
-	wbService := NewService(db.Mysql)
+	wbService := NewService(db.Mongodb)
 	list, total, err := wbService.GetComponentList(offset, limit, componentSearch)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -49,7 +49,7 @@ func ComponentList(c *gin.Context) {
 
 //Create
 func Create(c *gin.Context) {
-	componentService := NewService(db.Mysql)
+	componentService := NewService(db.Mongodb)
 	wbObj := Component{}
 	err := c.ShouldBind(&wbObj)
 	if err != nil {
@@ -78,7 +78,7 @@ func Create(c *gin.Context) {
 
 //Update
 func Update(c *gin.Context) {
-	componentService := NewService(db.Mysql)
+	componentService := NewService(db.Mongodb)
 	component := Component{}
 	c.ShouldBind(&component)
 	err := componentService.UpdateComponent(&component)
@@ -99,7 +99,7 @@ func Update(c *gin.Context) {
 //Delete
 func Delete(c *gin.Context) {
 	componentId, _ := strconv.Atoi(c.Param("id"))
-	componentService := NewService(db.Mysql)
+	componentService := NewService(db.Mongodb)
 	err := componentService.DeleteComponent(componentId)
 	if err != nil {
 		fmt.Println("err:", err)

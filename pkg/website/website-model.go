@@ -14,6 +14,6 @@ type Website struct {
 }
 
 // 设置User的表名为`website`
-func (Website) TableName() string {
+func (Website) CollectionName() string {
 	return "website"
 }

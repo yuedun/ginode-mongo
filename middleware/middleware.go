@@ -6,8 +6,8 @@ import (
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
-	"github.com/yuedun/ginode/db"
-	"github.com/yuedun/ginode/pkg/user"
+	"github.com/yuedun/ginode-mongo/db"
+	"github.com/yuedun/ginode-mongo/pkg/user"
 
 	"github.com/gin-gonic/gin"
 )
@@ -104,7 +104,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 			}
 			username := loginVals.Username
 			password := loginVals.Password
-			userService := user.NewService(db.Mysql)
+			userService := user.NewService(db.Mongodb)
 			userObj := user.User{
 				UserName: username,
 			}

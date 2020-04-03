@@ -12,6 +12,6 @@ type Component struct {
 }
 
 // 设置User的表名为`website`
-func (Component) TableName() string {
+func (Component) CollectionName() string {
 	return "component"
 }

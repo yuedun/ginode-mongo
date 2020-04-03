@@ -1,59 +1,75 @@
 package website
 
 import (
+	"context"
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type (
 	WebsiteService interface {
-		GetWebsiteList(offset, limit int, search Website) (website []Website, count int, err error)
+		GetWebsiteList(offset, limit int, search Website) (website []Website, count int64, err error)
 		CreateWebsite(website *Website) (err error)
 		UpdateWebsite(website *Website) (err error)
 		DeleteWebsite(websiteID int) (err error)
 	}
 )
 type websiteService struct {
-	mysql *gorm.DB
+	mongo *mongo.Database
 }
 
-func NewService(mysql *gorm.DB) WebsiteService {
+func NewService(mongo *mongo.Database) WebsiteService {
 	return &websiteService{
-		mysql: mysql,
+		mongo: mongo,
 	}
 }
 
-func (u *websiteService) GetWebsiteList(offset, limit int, search Website) (websites []Website, count int, err error) {
-	if search.Name != "" {
-		u.mysql = u.mysql.Where("name LIKE ?", search.Name+"%")
+func (this *websiteService) GetWebsiteList(offset, limit int, search Website) (websites []Website, count int64, err error) {
+	//一次查询多条数据
+	// 查询createtime>=3
+	// 限制取2条
+	// createtime从大到小排序的数据
+	var cursor *mongo.Cursor
+	if cursor, err = this.mongo.Collection("test").Find(context.Background(), bson.M{"createtime": bson.M{"$gte": 2}}, options.Find().SetLimit(2), options.Find().SetSort(bson.M{"createtime": -1})); err != nil {
+		return nil, 0, err
 	}
-	if search.Category != "" {
-		u.mysql = u.mysql.Where("category =?", search.Category)
+	defer cursor.Close(context.Background())
+	website := Website{}
+	for cursor.Next(context.Background()) {
+		if err = cursor.Decode(&website); err != nil {
+
+		}
+		websites = append(websites, website)
+	}
+	//查询集合里面有多少数据
+	if count, err = this.mongo.Collection("").CountDocuments(context.Background(), bson.D{}); err != nil {
+		return nil, 0, err
 	}
 
-	err = u.mysql.Offset(offset).Limit(limit).Find(&websites).Offset(-1).Limit(-1).Count(&count).Error
+	fmt.Printf("Count里面有多少条数据:%d\n", count)
 	return websites, count, err
 }
 
-func (u *websiteService) CreateWebsite(website *Website) (err error) {
-	err = u.mysql.Create(website).Error
-	fmt.Println(website)
+func (this *websiteService) CreateWebsite(website *Website) (err error) {
+	_, err = this.mongo.Collection("").InsertOne(context.Background(), website)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *websiteService) UpdateWebsite(website *Website) (err error) {
-	err = u.mysql.Model(website).Update(website).Error
+func (this *websiteService) UpdateWebsite(website *Website) (err error) {
+	err = this.mongo.Collection("").FindOneAndUpdate(context.Background(), bson.D{{"name", "howie_4"}}, bson.M{"$set": bson.M{"name": "这条数据我需要修改了"}}).Decode(&website)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *websiteService) DeleteWebsite(websiteID int) (err error) {
-	u.mysql.Where("id = ?", websiteID).Delete(Website{})
+func (this *websiteService) DeleteWebsite(websiteID int) (err error) {
+	this.mongo.Collection("").DeleteOne(context.Background(), bson.D{})
 	if err != nil {
 		return err
 	}

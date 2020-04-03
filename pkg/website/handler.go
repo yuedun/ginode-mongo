@@ -2,7 +2,7 @@ package website
 
 import (
 	"fmt"
-	"github.com/yuedun/ginode/db"
+	"github.com/yuedun/ginode-mongo/db"
 	"net/http"
 	"strconv"
 	"time"
@@ -29,7 +29,7 @@ func WebsiteList(c *gin.Context) {
 		Category: category,
 		Status:   1,
 	}
-	wbService := NewService(db.Mysql)
+	wbService := NewService(db.Mongodb)
 	list, total, err := wbService.GetWebsiteList(offset, limit, websiteSearch)
 	data := map[string]any{
 		"result": list,
@@ -49,7 +49,7 @@ func WebsiteList(c *gin.Context) {
 
 //Create
 func Create(c *gin.Context) {
-	websiteService := NewService(db.Mysql)
+	websiteService := NewService(db.Mongodb)
 	wbObj := Website{}
 	c.ShouldBind(&wbObj)
 	wbObj.CreatedAt = time.Now()
@@ -71,7 +71,7 @@ func Create(c *gin.Context) {
 
 //Update
 func Update(c *gin.Context) {
-	websiteService := NewService(db.Mysql)
+	websiteService := NewService(db.Mongodb)
 	website := Website{}
 	c.ShouldBind(&website)
 	err := websiteService.UpdateWebsite(&website)
@@ -92,7 +92,7 @@ func Update(c *gin.Context) {
 //Delete
 func Delete(c *gin.Context) {
 	websiteId, _ := strconv.Atoi(c.Param("id"))
-	websiteService := NewService(db.Mysql)
+	websiteService := NewService(db.Mongodb)
 	err := websiteService.DeleteWebsite(websiteId)
 	if err != nil {
 		fmt.Println("err:", err)

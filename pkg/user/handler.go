@@ -1,10 +1,9 @@
 package user
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/yuedun/ginode/db"
-	"io/ioutil"
+	"github.com/yuedun/ginode-mongo/db"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,31 +11,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Index
-func Index(c *gin.Context) {
-	nameBody := map[string]string{}
-	name := c.Request.Body
-	nameByte, _ := ioutil.ReadAll(name)
-	json.Unmarshal(nameByte, &nameBody)
-	fmt.Println(nameBody)
-	c.JSON(200, gin.H{
-		"message": nameBody["name"],
-	})
-}
-
-type loginData struct {
-	UserName string `json:"userName"`
-	Password string `json:"password"`
-}
-
 //GetUserInfo
 func GetUserInfo(c *gin.Context) {
-	userID, _ := strconv.Atoi(c.Param("id"))
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
+	userID := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		panic(err)
+	}
 	username := c.Param("username")
 	mobile := c.Param("mobile")
-	userService := NewUserService(db.Mysql)
+	userService := NewService(db.Mongodb)
 	userObj := User{
-		Id:       userID,
+		Id:       id,
 		UserName: username,
 		Mobile:   mobile,
 	}
@@ -50,28 +43,24 @@ func GetUserInfo(c *gin.Context) {
 	})
 }
 
-//GetUserInfoBySql
-func GetUserInfoBySql(c *gin.Context) {
-	userService := NewService(db.Mysql)
-	user, err := userService.GetUserInfoBySQL()
-	if err != nil {
-		fmt.Println("err:", err)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": user,
-	})
-}
-
 //CreateUser
 func CreateUser(c *gin.Context) {
-	userService := NewService(db.Mysql)
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
+	userService := NewService(db.Mongodb)
 	user := User{}
-	fmt.Println(">>>", c.PostForm("mobile"))
-	user.Mobile = c.PostForm("mobile")
+	if err := c.ShouldBind(&user); err != nil {
+		panic(err)
+	}
 	user.CreatedAt = time.Now()
 	err := userService.CreateUser(&user)
 	if err != nil {
-		fmt.Println("err:", err)
+		panic(err)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"data":    user,
@@ -81,9 +70,10 @@ func CreateUser(c *gin.Context) {
 
 //UpdateUser post json
 func UpdateUser(c *gin.Context) {
-	userService := NewService(db.Mysql)
+	userService := NewService(db.Mongodb)
 	var user User
 	userID, _ := strconv.Atoi(c.Param("id"))
+	fmt.Println(userID)
 	//user.Addr = c.PostForm("addr")
 	if err := c.ShouldBind(&user); err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -91,7 +81,7 @@ func UpdateUser(c *gin.Context) {
 			"message": "err",
 		})
 	} else {
-		err := userService.UpdateUser(userID, &user)
+		err := userService.UpdateUser(&user)
 		if err != nil {
 			fmt.Println("err:", err)
 		}
@@ -105,7 +95,7 @@ func UpdateUser(c *gin.Context) {
 //DeleteUser
 func DeleteUser(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("id"))
-	userService := NewService(db.Mysql)
+	userService := NewService(db.Mongodb)
 	err := userService.DeleteUser(userID)
 	if err != nil {
 		fmt.Println("err:", err)

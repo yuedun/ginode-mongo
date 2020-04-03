@@ -1,96 +1,85 @@
 package user
 
 import (
+	"context"
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type (
-	/**
-	  面向接口开发：
-	  面向接口开发的好处是要对下面的函数进行测试时，不需要依赖一个全局的mysql连接，只需要调用NewService传一个mysql连接参数即可测试
-	*/
 	UserService interface {
 		GetUserInfo(userObj User) (user User, err error)
-		GetUserInfoBySQL() (user User, err error)
+		GetUserList(offset, limit int, search User) (user []User, count int64, err error)
 		CreateUser(user *User) (err error)
-		UpdateUser(userID int, user *User) (err error)
+		UpdateUser(user *User) (err error)
 		DeleteUser(userID int) (err error)
 	}
 )
-
 type userService struct {
-	mysql *gorm.DB
+	mongo *mongo.Database
 }
 
-/*NewService 初始化结构体*/
-func NewService(mysql *gorm.DB) UserService {
+func NewService(mongo *mongo.Database) UserService {
 	return &userService{
-		mysql: mysql,
+		mongo: mongo,
 	}
 }
 
-func (u *userService) GetUserInfo(userObj User) (user User, err error) {
-	err = u.mysql.Where(userObj).Find(&user).Error
-	if err != nil {
+func (this *userService) GetUserInfo(usersearch User) (user User, err error) {
+	if err = this.mongo.Collection("user").FindOne(context.Background(), bson.M{"_id": usersearch.Id}).Decode(&user); err != nil {
 		return user, err
 	}
 	return user, nil
 }
 
-func (u *userService) GetUserInfoBySQL() (user User, err error) {
-	err = u.mysql.Raw("select * from user where id=?", user.Id).Scan(&user).Error
-	if err != nil {
-		return user, err
+func (this *userService) GetUserList(offset, limit int, search User) (users []User, count int64, err error) {
+	//一次查询多条数据
+	// 查询createtime>=3
+	// 限制取2条
+	// createtime从大到小排序的数据
+	var cursor *mongo.Cursor
+	if cursor, err = this.mongo.Collection("user").Find(context.Background(), bson.M{"createtime": bson.M{"$gte": 2}}, options.Find().SetLimit(2), options.Find().SetSort(bson.M{"createtime": -1})); err != nil {
+		return nil, 0, err
 	}
-	return user, nil
+	defer cursor.Close(context.Background())
+	user := User{}
+	for cursor.Next(context.Background()) {
+		if err = cursor.Decode(&user); err != nil {
+
+		}
+		users = append(users, user)
+	}
+	//查询集合里面有多少数据
+	if count, err = this.mongo.Collection("user").CountDocuments(context.Background(), bson.D{}); err != nil {
+		return nil, 0, err
+	}
+
+	fmt.Printf("Count里面有多少条数据:%d\n", count)
+	return users, count, err
 }
 
-func (u *userService) CreateUser(user *User) (err error) {
-	err = u.mysql.Create(user).Error
-	fmt.Println(user)
+func (this *userService) CreateUser(user *User) (err error) {
+	_, err = this.mongo.Collection("user").InsertOne(context.Background(), user)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *userService) UpdateUser(userID int, user *User) (err error) {
-	err = u.mysql.Model(user).Where("id = ?", userID).Update(user).Error
+func (this *userService) UpdateUser(user *User) (err error) {
+	err = this.mongo.Collection("user").FindOneAndUpdate(context.Background(), bson.D{{"name", "howie_4"}}, bson.M{"$set": bson.M{"name": "这条数据我需要修改了"}}).Decode(&user)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (u *userService) DeleteUser(userID int) (err error) {
-	u.mysql.Where("id = ?", userID).Delete(User{})
+func (this *userService) DeleteUser(userID int) (err error) {
+	this.mongo.Collection("user").DeleteOne(context.Background(), bson.D{})
 	if err != nil {
 		return err
 	}
 	return nil
-}
-
-/**
-面向接口开发的好处是，如果需要修改方法逻辑，可以在不修改原来逻辑的情况下新增接口实现，在调用的地方使用新的实现即可
-*/
-type newUserService struct {
-	userService
-	mysql *gorm.DB
-}
-
-/*NewUserService 初始化结构体*/
-func NewUserService(mysql *gorm.DB) UserService {
-	return &newUserService{
-		mysql: mysql,
-	}
-}
-
-func (u *newUserService) GetUserInfo(userObj User) (user User, err error) {
-	err = u.mysql.First(&user).Error
-	if err != nil {
-		return user, err
-	}
-	fmt.Println("新方法")
-	return user, nil
 }

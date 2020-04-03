@@ -1,4 +1,4 @@
-# ginode
+# ginode-mongo
 一个和nodejs很像的框架
 
 ## 本地开发

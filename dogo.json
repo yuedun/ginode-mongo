@@ -1,10 +1,10 @@
 {
-    "WorkingDir": "D:\\goproject\\ginode",
+    "WorkingDir": "D:\\goproject\\ginode-mongo",
     "SourceDir": [
-        "D:\\goproject\\ginode"
+        "D:\\goproject\\ginode-mongo"
     ],
     "SourceExt": [".go"],
     "BuildCmd": "go build",
-    "RunCmd": "ginode.exe",
+    "RunCmd": "ginode-mongo.exe",
     "Decreasing": 1
 }
