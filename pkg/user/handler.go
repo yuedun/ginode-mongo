@@ -57,7 +57,9 @@ func CreateUser(c *gin.Context) {
 	if err := c.ShouldBind(&user); err != nil {
 		panic(err)
 	}
+	user.Id = primitive.NewObjectID()
 	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
 	err := userService.CreateUser(&user)
 	if err != nil {
 		panic(err)

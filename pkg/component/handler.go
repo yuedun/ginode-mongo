@@ -3,6 +3,7 @@ package component
 import (
 	"fmt"
 	"github.com/yuedun/ginode-mongo/db"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
 	"time"
@@ -14,11 +15,11 @@ type any = interface{}
 
 //ComponentList列表
 func ComponentList(c *gin.Context) {
-	offset, err := strconv.Atoi(c.Query("offset"))
+	offset, err := strconv.ParseInt(c.Query("offset"), 10, 64)
 	if err != nil {
 		offset = 0
 	}
-	limit, err := strconv.Atoi(c.Query("limit"))
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
 	if err != nil {
 		limit = 10
 	}
@@ -29,8 +30,8 @@ func ComponentList(c *gin.Context) {
 		Category: category,
 		Status:   1,
 	}
-	wbService := NewService(db.Mongodb)
-	list, total, err := wbService.GetComponentList(offset, limit, componentSearch)
+	cmService := NewService(db.Mongodb)
+	list, total, err := cmService.GetComponentList(offset, limit, componentSearch)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
@@ -49,26 +50,25 @@ func ComponentList(c *gin.Context) {
 
 //Create
 func Create(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
 	componentService := NewService(db.Mongodb)
 	wbObj := Component{}
 	err := c.ShouldBind(&wbObj)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"data":    wbObj,
-			"message": err.Error(),
-		})
-		return
+		panic(err)
 	}
+	wbObj.Id = primitive.NewObjectID()
 	wbObj.CreatedAt = time.Now()
 	wbObj.Status = 1
 	err = componentService.CreateComponent(&wbObj)
 	if err != nil {
-		fmt.Println("err:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"data":    wbObj,
-			"message": err.Error(),
-		})
-		return
+		panic(err)
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"data":    wbObj,

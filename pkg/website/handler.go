@@ -3,6 +3,7 @@ package website
 import (
 	"fmt"
 	"github.com/yuedun/ginode-mongo/db"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
 	"time"
@@ -14,11 +15,11 @@ type any = interface{}
 
 //WebsiteList列表
 func WebsiteList(c *gin.Context) {
-	offset, err := strconv.Atoi(c.Query("offset"))
+	offset, err := strconv.ParseInt(c.Query("offset"), 10, 64)
 	if err != nil {
 		offset = 0
 	}
-	limit, err := strconv.Atoi(c.Query("limit"))
+	limit, err := strconv.ParseInt(c.Query("limit"), 10, 64)
 	if err != nil {
 		limit = 10
 	}
@@ -47,13 +48,30 @@ func WebsiteList(c *gin.Context) {
 	})
 }
 
+// 获取单个网站
+func GetWebsite(c *gin.Context)  {
+	webService:=NewService(db.Mongodb)
+	website, err:=webService.GetWebsite("xes")
+	if err!=nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"err":err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data":website,
+	})
+}
+
 //Create
 func Create(c *gin.Context) {
 	websiteService := NewService(db.Mongodb)
 	wbObj := Website{}
 	c.ShouldBind(&wbObj)
+	wbObj.ID = primitive.NewObjectID()
 	wbObj.CreatedAt = time.Now()
+	wbObj.UpdatedAt = time.Now()
 	wbObj.Status = 1
+	fmt.Println(wbObj)
 	err := websiteService.CreateWebsite(&wbObj)
 	if err != nil {
 		fmt.Println("err:", err)
@@ -91,18 +109,26 @@ func Update(c *gin.Context) {
 
 //Delete
 func Delete(c *gin.Context) {
-	websiteId, _ := strconv.Atoi(c.Param("id"))
-	websiteService := NewService(db.Mongodb)
-	err := websiteService.DeleteWebsite(websiteId)
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
+	websiteId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(websiteId)
 	if err != nil {
-		fmt.Println("err:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"message": err.Error(),
-		})
-		return
-	} else {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "ok",
-		})
+		panic(err)
 	}
+	websiteService := NewService(db.Mongodb)
+	err = websiteService.DeleteWebsite(id)
+	if err != nil {
+		panic(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+
 }

@@ -10,7 +10,7 @@ import (
 
 type (
 	ComponentService interface {
-		GetComponentList(offset, limit int, search Component) (component []Component, count int64, err error)
+		GetComponentList(offset, limit int64, search Component) (component []Component, count int64, err error)
 		CreateComponent(component *Component) (err error)
 		UpdateComponent(component *Component) (err error)
 		DeleteComponent(componentID int) (err error)
@@ -26,25 +26,28 @@ func NewService(mongo *mongo.Database) ComponentService {
 	}
 }
 
-func (u *componentService) GetComponentList(offset, limit int, search Component) (components []Component, count int64, err error) {
-	//一次查询多条数据
-	// 查询createtime>=3
-	// 限制取2条
-	// createtime从大到小排序的数据
+func (u *componentService) GetComponentList(offset, limit int64, search Component) (components []Component, count int64, err error) {
 	var cursor *mongo.Cursor
-	if cursor, err = u.mongo.Collection("test").Find(context.Background(), bson.M{"createtime": bson.M{"$gte": 2}}, options.Find().SetLimit(2), options.Find().SetSort(bson.M{"createtime": -1})); err != nil {
+	if cursor, err = u.mongo.Collection("component").Find(context.Background(),
+		bson.M{},
+		options.Find().SetLimit(limit),
+		options.Find().SetSkip(offset),
+		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
 		return nil, 0, err
 	}
 	defer cursor.Close(context.Background())
-	component := Component{}
 	for cursor.Next(context.Background()) {
+		component := Component{}
 		if err = cursor.Decode(&component); err != nil {
-
+			fmt.Println(">>>>>>>>>.")
+			return nil, 0, err
 		}
+		fmt.Println(component)
 		components = append(components, component)
 	}
+	fmt.Println(components)
 	//查询集合里面有多少数据
-	if count, err = u.mongo.Collection("").CountDocuments(context.Background(), bson.D{}); err != nil {
+	if count, err = u.mongo.Collection("component").CountDocuments(context.Background(), bson.D{}); err != nil {
 		return nil, 0, err
 	}
 
@@ -53,7 +56,7 @@ func (u *componentService) GetComponentList(offset, limit int, search Component)
 }
 
 func (u *componentService) CreateComponent(component *Component) (err error) {
-	_, err = u.mongo.Collection("").InsertOne(context.Background(), component)
+	_, err = u.mongo.Collection("component").InsertOne(context.Background(), component)
 	if err != nil {
 		return err
 	}
@@ -61,7 +64,7 @@ func (u *componentService) CreateComponent(component *Component) (err error) {
 }
 
 func (u *componentService) UpdateComponent(component *Component) (err error) {
-	err = u.mongo.Collection("").FindOneAndUpdate(context.Background(), bson.D{{"name", "howie_4"}}, bson.M{"$set": bson.M{"name": "这条数据我需要修改了"}}).Decode(&component)
+	err = u.mongo.Collection("component").FindOneAndUpdate(context.Background(), bson.D{{"name", "howie_4"}}, bson.M{"$set": bson.M{"name": "这条数据我需要修改了"}}).Decode(&component)
 	if err != nil {
 		return err
 	}
@@ -69,7 +72,7 @@ func (u *componentService) UpdateComponent(component *Component) (err error) {
 }
 
 func (u *componentService) DeleteComponent(componentID int) (err error) {
-	u.mongo.Collection("").DeleteOne(context.Background(), bson.D{})
+	u.mongo.Collection("component").DeleteOne(context.Background(), bson.D{})
 	if err != nil {
 		return err
 	}

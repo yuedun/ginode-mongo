@@ -43,4 +43,13 @@ func Register(router *gin.Engine) {
 		componentRouter.PUT("/update", component.Update)
 		componentRouter.DELETE("/delete/:id", component.Delete)
 	}
+	//website路由注册
+	websiteAPI := router.Group("/api/website")
+	{
+		websiteAPI.GET("/", website.WebsiteList)
+		websiteAPI.GET("/get-website", website.GetWebsite)
+		websiteAPI.POST("/create", website.Create)
+		websiteAPI.PUT("/update", website.Update)
+		websiteAPI.DELETE("/delete/:id", website.Delete)
+	}
 }

@@ -28,6 +28,8 @@ func NewService(mongo *mongo.Database) UserService {
 }
 
 func (this *userService) GetUserInfo(usersearch User) (user User, err error) {
+	fmt.Println(usersearch)
+	//, "username": usersearch.UserName
 	if err = this.mongo.Collection("user").FindOne(context.Background(), bson.M{"_id": usersearch.Id}).Decode(&user); err != nil {
 		return user, err
 	}
@@ -68,10 +70,22 @@ func (this *userService) CreateUser(user *User) (err error) {
 	return nil
 }
 
+//D: A BSON document. This type should be used in situations where order matters, such as MongoDB commands.
+//M: An unordered map. It is the same as D, except it does not preserve order.
+//A: A BSON array.
+//E: A single element inside a D.
 func (this *userService) UpdateUser(user *User) (err error) {
-	err = this.mongo.Collection("user").FindOneAndUpdate(context.Background(), bson.D{{"name", "howie_4"}}, bson.M{"$set": bson.M{"name": "这条数据我需要修改了"}}).Decode(&user)
-	if err != nil {
-		return err
+	result := this.mongo.Collection("user").FindOneAndUpdate(
+		context.Background(),
+		bson.D{{"_id", user.Id}},
+		bson.M{
+			"$set": bson.M{
+				"name":     user.UserName,
+				"category": user.Mobile,
+			},
+		})
+	if result.Err() != nil {
+		return result.Err()
 	}
 	return nil
 }

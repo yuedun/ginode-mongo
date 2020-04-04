@@ -6,7 +6,6 @@ require (
 	github.com/appleboy/gin-jwt/v2 v2.6.3
 	github.com/gin-gonic/gin v1.6.2
 	github.com/golang/protobuf v1.3.5 // indirect
-	github.com/jinzhu/gorm v1.9.12
 	github.com/klauspost/compress v1.10.3 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
