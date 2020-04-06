@@ -6,10 +6,9 @@ import (
 )
 
 type Component struct {
-	Id            primitive.ObjectID `json:"id",bson:"_id,omitempty`                        // bson是用来创建后返回，omitempty可选
+	ID            primitive.ObjectID `bson:"_id,omitempty`                        // bson是用来创建后返回，omitempty可选
 	Name          string             `json:"name",bson:"name,omitempty"`                    //组件名
 	Category      string             `json:"category",bson:"category,omitempty"`            //分类
-	WebsiteID     primitive.ObjectID `json:"websiteID",bson:"websiteID"`                    // 组件归属网站id
 	Status        int                `json:"status",bson:"status,omitempty"`                // 可用状态
 	TitleH1       string             `json:"title_h_1",bson:"titleH1,omitempty"`            // 一级标题
 	TitleH2       string             `json:"title_h_2",bson:"titleH2,omitempty"`            // 二级标题

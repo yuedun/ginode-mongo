@@ -63,7 +63,7 @@ func Create(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	wbObj.Id = primitive.NewObjectID()
+	wbObj.ID = primitive.NewObjectID()
 	wbObj.CreatedAt = time.Now()
 	wbObj.Status = 1
 	err = componentService.CreateComponent(&wbObj)

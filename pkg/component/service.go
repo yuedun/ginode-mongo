@@ -36,15 +36,19 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 		return nil, 0, err
 	}
 	defer cursor.Close(context.Background())
-	for cursor.Next(context.Background()) {
-		component := Component{}
-		if err = cursor.Decode(&component); err != nil {
-			fmt.Println(">>>>>>>>>.")
-			return nil, 0, err
-		}
-		fmt.Println(component)
-		components = append(components, component)
+	if err = cursor.All(context.Background(), &components); err != nil {
+		return nil, 0, err
 	}
+	//如需对数据迭代处理使用下面方法，不需要则直接使用上面方法
+	//for cursor.Next(context.Background()) {
+	//	component := Component{}
+	//	if err = cursor.Decode(&component); err != nil {
+	//		fmt.Println(">>>>>>>>>.")
+	//		return nil, 0, err
+	//	}
+	//	fmt.Println(component)
+	//	components = append(components, component)
+	//}
 	fmt.Println(components)
 	//查询集合里面有多少数据
 	if count, err = u.mongo.Collection("component").CountDocuments(context.Background(), bson.D{}); err != nil {
