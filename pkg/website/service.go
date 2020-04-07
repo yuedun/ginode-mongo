@@ -59,7 +59,10 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 
 func (this *websiteService) GetWebsite(url string) (website Website, err error) {
 	//没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
-	this.mongo.Collection("website").FindOne(context.Background(), bson.M{}).Decode(&website);
+	if err = this.mongo.Collection("website").FindOne(context.Background(), bson.M{"url": url}).Decode(&website); err != nil {
+		fmt.Println("get website err:", err.Error())
+		return Website{}, err
+	}
 	fmt.Printf("数据:%v\n", website)
 	return website, nil
 }

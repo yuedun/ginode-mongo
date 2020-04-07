@@ -6,7 +6,7 @@ import (
 )
 
 type Component struct {
-	ID            primitive.ObjectID `bson:"_id,omitempty`                        // bson是用来创建后返回，omitempty可选
+	ID            primitive.ObjectID `bson:"id,omitempty`                                   // bson是用来创建后返回，omitempty可选
 	Name          string             `json:"name",bson:"name,omitempty"`                    //组件名
 	Category      string             `json:"category",bson:"category,omitempty"`            //分类
 	Status        int                `json:"status",bson:"status,omitempty"`                // 可用状态

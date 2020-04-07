@@ -6,7 +6,7 @@ import (
 )
 
 type User struct {
-	Id          primitive.ObjectID `json:"_id",bson:"_id,omitempty"` // bson是用来创建后返回，omitempty是创建时自动创建
+	ID          primitive.ObjectID `bson:"_id,omitempty"` // bson是用来创建后返回，omitempty是创建时自动创建
 	Mobile      string             `json:"mobile",bson:"mobile,omitempty"`
 	UserName    string             `json:"user_name"bson:"userName,omitempty"`
 	Password    string             `json:"password",bson:"password,omitempty"`

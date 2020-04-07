@@ -2,11 +2,12 @@ package website
 
 import (
 	"fmt"
-	"github.com/yuedun/ginode-mongo/db"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/yuedun/ginode-mongo/db"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +31,7 @@ func WebsiteList(c *gin.Context) {
 		Category: category,
 		Status:   1,
 	}
-	wbService := NewService(db.Mongodb)
+	wbService := NewService(db.NewDB("website"))
 	list, total, err := wbService.GetWebsiteList(offset, limit, websiteSearch)
 	data := map[string]any{
 		"result": list,
@@ -49,22 +50,26 @@ func WebsiteList(c *gin.Context) {
 }
 
 // 获取单个网站
-func GetWebsite(c *gin.Context)  {
-	webService:=NewService(db.Mongodb)
-	website, err:=webService.GetWebsite("xes")
-	if err!=nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"err":err.Error(),
+func GetWebsite(c *gin.Context) {
+	webService := NewService(db.NewDB("website"))
+	name := c.Query("name")
+	fmt.Println("url:", name)
+	website, err := webService.GetWebsite(name)
+	if err != nil {
+		c.JSON(http.StatusNoContent, gin.H{
+			"err": err.Error(),
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data":website,
+		"data": website,
 	})
+
 }
 
 //Create
 func Create(c *gin.Context) {
-	websiteService := NewService(db.Mongodb)
+	websiteService := NewService(db.NewDB("website"))
 	wbObj := Website{}
 	c.ShouldBind(&wbObj)
 	wbObj.ID = primitive.NewObjectID()
@@ -89,7 +94,7 @@ func Create(c *gin.Context) {
 
 //Update
 func Update(c *gin.Context) {
-	websiteService := NewService(db.Mongodb)
+	websiteService := NewService(db.NewDB("website"))
 	website := Website{}
 	c.ShouldBind(&website)
 	err := websiteService.UpdateWebsite(&website)
@@ -121,7 +126,7 @@ func Delete(c *gin.Context) {
 	if err != nil {
 		panic(err)
 	}
-	websiteService := NewService(db.Mongodb)
+	websiteService := NewService(db.NewDB("website"))
 	err = websiteService.DeleteWebsite(id)
 	if err != nil {
 		panic(err)

@@ -2,13 +2,12 @@ package user
 
 import (
 	"fmt"
-	"github.com/yuedun/ginode-mongo/db"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/yuedun/ginode-mongo/db"
 )
 
 //GetUserInfo
@@ -20,20 +19,9 @@ func GetUserInfo(c *gin.Context) {
 			})
 		}
 	}()
-	userID := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(userID)
-	if err != nil {
-		panic(err)
-	}
 	username := c.Param("username")
-	mobile := c.Param("mobile")
-	userService := NewService(db.Mongodb)
-	userObj := User{
-		Id:       id,
-		UserName: username,
-		Mobile:   mobile,
-	}
-	user, err := userService.GetUserInfo(userObj)
+	userService := NewService(db.NewDB("website"))
+	user, err := userService.GetUserInfoByName(username)
 	if err != nil {
 		fmt.Println("err:", err)
 	}
@@ -52,12 +40,11 @@ func CreateUser(c *gin.Context) {
 			})
 		}
 	}()
-	userService := NewService(db.Mongodb)
+	userService := NewService(db.NewDB("website"))
 	user := User{}
 	if err := c.ShouldBind(&user); err != nil {
 		panic(err)
 	}
-	user.Id = primitive.NewObjectID()
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 	err := userService.CreateUser(&user)
@@ -72,7 +59,7 @@ func CreateUser(c *gin.Context) {
 
 //UpdateUser post json
 func UpdateUser(c *gin.Context) {
-	userService := NewService(db.Mongodb)
+	userService := NewService(db.NewDB("website"))
 	var user User
 	userID, _ := strconv.Atoi(c.Param("id"))
 	fmt.Println(userID)
@@ -97,7 +84,7 @@ func UpdateUser(c *gin.Context) {
 //DeleteUser
 func DeleteUser(c *gin.Context) {
 	userID, _ := strconv.Atoi(c.Param("id"))
-	userService := NewService(db.Mongodb)
+	userService := NewService(db.NewDB("website"))
 	err := userService.DeleteUser(userID)
 	if err != nil {
 		fmt.Println("err:", err)

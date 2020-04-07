@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-var Mongodb *mongo.Database
+var Connect *mongo.Client
 
 func init() {
 	conf := util.Conf{}
@@ -28,5 +28,11 @@ func init() {
 	if err = client.Ping(context.Background(), readpref.Primary()); err != nil {
 		panic(err)
 	}
-	Mongodb = client.Database("website")
+	fmt.Println("Connected to MongoDB!")
+	Connect = client
+}
+
+// 用于支持多数据库
+func NewDB(dbname string) *mongo.Database {
+	return Connect.Database(dbname)
 }

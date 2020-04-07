@@ -2,11 +2,12 @@ package component
 
 import (
 	"fmt"
-	"github.com/yuedun/ginode-mongo/db"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/yuedun/ginode-mongo/db"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +31,7 @@ func ComponentList(c *gin.Context) {
 		Category: category,
 		Status:   1,
 	}
-	cmService := NewService(db.Mongodb)
+	cmService := NewService(db.NewDB("website"))
 	list, total, err := cmService.GetComponentList(offset, limit, componentSearch)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -57,7 +58,7 @@ func Create(c *gin.Context) {
 			})
 		}
 	}()
-	componentService := NewService(db.Mongodb)
+	componentService := NewService(db.NewDB("website"))
 	wbObj := Component{}
 	err := c.ShouldBind(&wbObj)
 	if err != nil {
@@ -78,7 +79,7 @@ func Create(c *gin.Context) {
 
 //Update
 func Update(c *gin.Context) {
-	componentService := NewService(db.Mongodb)
+	componentService := NewService(db.NewDB("website"))
 	component := Component{}
 	c.ShouldBind(&component)
 	err := componentService.UpdateComponent(&component)
@@ -99,7 +100,7 @@ func Update(c *gin.Context) {
 //Delete
 func Delete(c *gin.Context) {
 	componentId, _ := strconv.Atoi(c.Param("id"))
-	componentService := NewService(db.Mongodb)
+	componentService := NewService(db.NewDB("website"))
 	err := componentService.DeleteComponent(componentId)
 	if err != nil {
 		fmt.Println("err:", err)

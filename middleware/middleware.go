@@ -104,11 +104,8 @@ func Jwt() *jwt.GinJWTMiddleware {
 			}
 			username := loginVals.Username
 			password := loginVals.Password
-			userService := user.NewService(db.Mongodb)
-			userObj := user.User{
-				UserName: username,
-			}
-			user, err := userService.GetUserInfo(userObj)
+			userService := user.NewService(db.NewDB("website"))
+			user, err := userService.GetUserInfoByName(username)
 			if err != nil {
 				return nil, jwt.ErrFailedAuthentication
 			}

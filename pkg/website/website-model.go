@@ -7,7 +7,7 @@ import (
 )
 
 type Website struct {
-	ID         primitive.ObjectID    `bson:"_id",omitempty`                // bson是用来创建后返回，omitempty是可选
+	ID         primitive.ObjectID    `bson:"_id",omitempty`                          // bson是用来创建后返回，omitempty是可选
 	Name       string                `json:"name",bson:"name"`                       //网站名
 	Category   string                `json:"category",bson:"category"`               //网站分类
 	Url        string                `json:"url",bson:"url"`                         //网站地址
