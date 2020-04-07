@@ -59,20 +59,21 @@ func Create(c *gin.Context) {
 		}
 	}()
 	componentService := NewService(db.NewDB("website"))
-	wbObj := Component{}
-	err := c.ShouldBind(&wbObj)
+	comObj := Component{}
+	err := c.ShouldBind(&comObj)
 	if err != nil {
 		panic(err)
 	}
-	wbObj.ID = primitive.NewObjectID()
-	wbObj.CreatedAt = time.Now()
-	wbObj.Status = 1
-	err = componentService.CreateComponent(&wbObj)
+	comObj.ID = primitive.NewObjectID()
+	comObj.CreatedAt = time.Now()
+	comObj.UpdatedAt = time.Now()
+	comObj.Status = 1
+	err = componentService.CreateComponent(&comObj)
 	if err != nil {
 		panic(err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data":    wbObj,
+		"data":    comObj,
 		"message": "ok",
 	})
 }
@@ -81,10 +82,17 @@ func Create(c *gin.Context) {
 func Update(c *gin.Context) {
 	componentService := NewService(db.NewDB("website"))
 	component := Component{}
-	c.ShouldBind(&component)
+	if err := c.ShouldBind(&component); err != nil {
+		fmt.Println("err shouldbind:", err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": err.Error(),
+		})
+		return
+	}
+	fmt.Println(component)
 	err := componentService.UpdateComponent(&component)
 	if err != nil {
-		fmt.Println("err:", err)
+		fmt.Println("err update:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})

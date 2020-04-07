@@ -22,6 +22,7 @@ func Register(router *gin.Engine) {
 		userRouter.GET("/logout", middleware.Jwt().LogoutHandler)
 		userRouter.GET("/info/:id", user.GetUserInfo) //单独给某个路由添加中间件
 		userRouter.POST("/", user.CreateUser)
+		userRouter.GET("/list", user.GetUserList)
 		userRouter.PUT("/update/:id", user.UpdateUser)
 		userRouter.DELETE("/del/:id", user.DeleteUser)
 	}

@@ -31,6 +31,28 @@ func GetUserInfo(c *gin.Context) {
 	})
 }
 
+func GetUserList(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
+	//username := c.Param("username")
+	searchObj := User{}
+	userService := NewService(db.NewDB("website"))
+	user, count, err := userService.GetUserList(0, 20, searchObj)
+	if err != nil {
+		fmt.Println("err:", err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data":    user,
+		"count":   count,
+		"message": "ok",
+	})
+}
+
 //CreateUser
 func CreateUser(c *gin.Context) {
 	defer func() {

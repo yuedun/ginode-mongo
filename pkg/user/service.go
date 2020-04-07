@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -43,17 +44,19 @@ func (this *userService) GetUserList(offset, limit int64, search User) (users []
 	var cursor *mongo.Cursor
 	if cursor, err = this.mongo.Collection("user").Find(
 		context.Background(),
-		bson.M{"createtime": bson.M{"$gte": 2}},
+		bson.M{},
 		options.Find().SetSkip(offset), options.Find().SetLimit(limit), options.Find().SetSort(bson.M{"createtime": -1})); err != nil {
 		return nil, 0, err
 	}
-	defer cursor.Close(context.Background())
-	user := User{}
-	for cursor.Next(context.Background()) {
-		if err = cursor.Decode(&user); err != nil {
-
-		}
-		users = append(users, user)
+	//for cursor.Next(context.Background()) {
+	//	user := User{}
+	//	if err = cursor.Decode(&user); err != nil {
+	//
+	//	}
+	//	users = append(users, user)
+	//}
+	if err = cursor.All(context.Background(), &users); err != nil {
+		return nil, 0, err
 	}
 	//查询集合里面有多少数据
 	if count, err = this.mongo.Collection("user").CountDocuments(context.Background(), bson.D{}); err != nil {

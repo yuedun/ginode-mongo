@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export GIN_MODE=release
+pm2 restart ginode-mongo

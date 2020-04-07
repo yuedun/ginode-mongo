@@ -28,14 +28,14 @@ func NewService(mongo *mongo.Database) ComponentService {
 
 func (u *componentService) GetComponentList(offset, limit int64, search Component) (components []Component, count int64, err error) {
 	var cursor *mongo.Cursor
-	if cursor, err = u.mongo.Collection("component").Find(context.Background(),
+	if cursor, err = u.mongo.Collection("component").Find(
+		context.Background(),
 		bson.M{},
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
 		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
 		return nil, 0, err
 	}
-	defer cursor.Close(context.Background())
 	if err = cursor.All(context.Background(), &components); err != nil {
 		return nil, 0, err
 	}
@@ -68,7 +68,10 @@ func (u *componentService) CreateComponent(component *Component) (err error) {
 }
 
 func (u *componentService) UpdateComponent(component *Component) (err error) {
-	err = u.mongo.Collection("component").FindOneAndUpdate(context.Background(), bson.D{{"name", "howie_4"}}, bson.M{"$set": bson.M{"name": "这条数据我需要修改了"}}).Decode(&component)
+	err = u.mongo.Collection("component").FindOneAndUpdate(
+		context.Background(),
+		bson.D{{"_id", component.ID}},
+		bson.M{"$set": component}).Decode(&component)
 	if err != nil {
 		return err
 	}
