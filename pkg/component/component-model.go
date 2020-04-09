@@ -11,9 +11,9 @@ type Component struct {
 	Name          string             `json:"name" bson:"name,omitempty"`                    //组件名
 	Category      string             `json:"category" bson:"category,omitempty"`            //分类
 	Status        int                `json:"status" bson:"status,omitempty"`                // 可用状态
-	TitleH1       string             `json:"title_h_1" bson:"titleH1,omitempty"`            // 一级标题
-	TitleH2       string             `json:"title_h_2" bson:"titleH2,omitempty"`            // 二级标题
-	TitleH3       string             `json:"title_h_3" bson:"titleH3,omitempty"`            // 三级标题
+	Title1        string             `json:"title_1" bson:"title1,omitempty"`               // 一级标题
+	Title2        string             `json:"title_2" bson:"title2,omitempty"`               // 二级标题
+	Title3        string             `json:"title_3" bson:"title3,omitempty"`               // 三级标题
 	Description   string             `json:"description" bson:"description,omitempty"`      // 文字描述
 	BackgroundImg string             `json:"background_img" bson:"backgroundImg,omitempty"` // 背景图
 	BigImg        string             `json:"big_img" bson:"bigImg,omitempty"`               // 展示大图
@@ -26,9 +26,9 @@ type Component struct {
 
 type Element struct {
 	Icon        string `json:"icon" bson:"icon,omitempty"` //图标
-	TitleH1     string `json:"title_h_1" bson:"titleH1,omitempty"`
-	TitleH2     string `json:"title_h_2" bson:"titleH2,omitempty"`
-	TitleH3     string `json:"title_h_3" bson:"titleH3,omitempty"`
+	Title1      string `json:"title_1" bson:"title1,omitempty"`
+	Title2      string `json:"title_2" bson:"title2,omitempty"`
+	Title3      string `json:"title_3" bson:"title3,omitempty"`
 	Description string `json:"description" bson:"description,omitempty"`
 	Link        string `json:"link" bson:"link,omitempty"`
 }

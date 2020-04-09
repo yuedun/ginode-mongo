@@ -3,6 +3,7 @@ package website
 import (
 	"context"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -63,7 +64,7 @@ func (this *websiteService) GetWebsite(url string) (website Website, err error) 
 		fmt.Println("get website err:", err.Error())
 		return Website{}, err
 	}
-	fmt.Printf("数据:%v\n", website)
+	fmt.Printf("数据:%+v\n", website)
 	return website, nil
 }
 
