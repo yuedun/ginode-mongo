@@ -110,7 +110,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 				return nil, jwt.ErrFailedAuthentication
 			}
 
-			if (user.UserName == "admin" && user.Password == password) || (username == "test" && password == "test") {
+			if (user.Username == username && user.Password == password) || (username == "test" && password == "test") {
 				// 返回的数据用在上面定义的PayloadFunc函数中
 				return &User{
 					UserName:  username,

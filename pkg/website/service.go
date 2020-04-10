@@ -85,7 +85,7 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 				"name":       website.Name,
 				"category":   website.Category,
 				"components": website.Components,
-				"url":        website.Url,
+				"url":        website.URL,
 			},
 		})
 	fmt.Println(result.MatchedCount, result.ModifiedCount)

@@ -3,9 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9dfc8497-0b77-47ad-b7f3-2da8e282929c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/middleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/middleware.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/component/component-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/component/component-model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/user-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/user-model.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/website/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/website/website-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/website-model.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
