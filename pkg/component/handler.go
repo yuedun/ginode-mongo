@@ -49,6 +49,27 @@ func ComponentList(c *gin.Context) {
 	})
 }
 
+//get component
+func GetComponent(c *gin.Context) {
+	componentId := c.Param("id")
+	componentService := NewService(db.NewDB("website"))
+	id, err := primitive.ObjectIDFromHex(componentId)
+	component, err := componentService.GetComponent(id)
+	fmt.Println(component)
+	if err != nil {
+		fmt.Println("err:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"data":    component,
+			"message": "ok",
+		})
+	}
+}
+
 //Create
 func Create(c *gin.Context) {
 	defer func() {

@@ -40,6 +40,7 @@ func Register(router *gin.Engine) {
 	componentRouter.Use(middleware.Jwt().MiddlewareFunc())
 	{
 		componentRouter.GET("/", component.ComponentList)
+		componentRouter.GET("/getComponent/:id", component.GetComponent)
 		componentRouter.POST("/create", component.Create)
 		componentRouter.PUT("/update", component.Update)
 		componentRouter.DELETE("/delete/:id", component.Delete)

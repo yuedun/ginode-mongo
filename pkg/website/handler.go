@@ -97,6 +97,7 @@ func Update(c *gin.Context) {
 	websiteService := NewService(db.NewDB("website"))
 	website := Website{}
 	c.ShouldBind(&website)
+	fmt.Println(website)
 	err := websiteService.UpdateWebsite(&website)
 	if err != nil {
 		fmt.Println("err:", err)

@@ -1,4 +1,5 @@
 #!/bin/bash
 
 export GIN_MODE=release
+chmod u+x ginode-mongo
 pm2 restart ginode-mongo

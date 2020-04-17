@@ -3,6 +3,7 @@ package website
 import (
 	"context"
 	"fmt"
+	"github.com/yuedun/ginode-mongo/pkg/component"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -45,7 +46,9 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 		if err = cursor.Decode(&website); err != nil {
 			return nil, 0, err
 		}
-		fmt.Println(website)
+		if website.Components == nil {
+			website.Components = []component.Component{}
+		}
 		websites = append(websites, website)
 	}
 	fmt.Printf("数据：%v\n", websites)
@@ -82,10 +85,14 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 		bson.D{{"_id", website.ID}},
 		bson.M{
 			"$set": bson.M{
-				"name":       website.Name,
-				"category":   website.Category,
-				"components": website.Components,
-				"url":        website.URL,
+				"name":        website.Name,
+				"category":    website.Category,
+				"components":  website.Components,
+				"url":         website.URL,
+				"icon":        website.Icon,
+				"keywords":    website.Keywords,
+				"description": website.Description,
+				"status":      website.Status,
 			},
 		})
 	fmt.Println(result.MatchedCount, result.ModifiedCount)

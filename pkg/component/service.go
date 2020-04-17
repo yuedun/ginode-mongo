@@ -3,7 +3,9 @@ package component
 import (
 	"context"
 	"fmt"
+
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -11,6 +13,7 @@ import (
 type (
 	ComponentService interface {
 		GetComponentList(offset, limit int64, search Component) (component []Component, count int64, err error)
+		GetComponent(id primitive.ObjectID) (component Component, err error)
 		CreateComponent(component *Component) (err error)
 		UpdateComponent(component *Component) (err error)
 		DeleteComponent(componentID int) (err error)
@@ -33,7 +36,7 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 		bson.M{},
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
-		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
+		options.Find().SetSort(bson.M{"_id": 1})); err != nil {
 		return nil, 0, err
 	}
 	if err = cursor.All(context.Background(), &components); err != nil {
@@ -49,7 +52,7 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 	//	fmt.Println(component)
 	//	components = append(components, component)
 	//}
-	fmt.Println(components)
+	fmt.Println("component list", components)
 	//查询集合里面有多少数据
 	if count, err = u.mongo.Collection("component").CountDocuments(context.Background(), bson.D{}); err != nil {
 		return nil, 0, err
@@ -65,6 +68,13 @@ func (u *componentService) CreateComponent(component *Component) (err error) {
 		return err
 	}
 	return nil
+}
+
+func (u *componentService) GetComponent(id primitive.ObjectID) (component Component, err error) {
+	if err = u.mongo.Collection("component").FindOne(context.Background(), bson.M{"_id": id}).Decode(&component); err != nil {
+		return Component{}, err
+	}
+	return component, nil
 }
 
 func (u *componentService) UpdateComponent(component *Component) (err error) {
