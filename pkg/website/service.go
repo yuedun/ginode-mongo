@@ -3,6 +3,7 @@ package website
 import (
 	"context"
 	"fmt"
+
 	"github.com/yuedun/ginode-mongo/pkg/component"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -18,6 +19,8 @@ type (
 		CreateWebsite(website *Website) (err error)
 		UpdateWebsite(website *Website) (err error)
 		DeleteWebsite(websiteID primitive.ObjectID) (err error)
+		GetWebsiteComponents(websiteID primitive.ObjectID) (components []component.Component, err error)
+		UpdateWebsiteComponents(id primitive.ObjectID, websiteComponents []component.Component) error
 	}
 )
 type websiteService struct {
@@ -108,5 +111,32 @@ func (this *websiteService) DeleteWebsite(websiteID primitive.ObjectID) (err err
 		return err
 	}
 	fmt.Println(result.DeletedCount)
+	return nil
+}
+
+func (this *websiteService) GetWebsiteComponents(websiteID primitive.ObjectID) (components []component.Component, err error) {
+	website := Website{}
+	err = this.mongo.Collection("website").FindOne(context.Background(), bson.M{"_id": websiteID}).Decode(&website)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(website)
+	components = website.Components
+	return components, nil
+}
+
+func (this *websiteService) UpdateWebsiteComponents(id primitive.ObjectID, websiteComponents []component.Component) error {
+	result, err := this.mongo.Collection("website").UpdateOne(
+		context.Background(),
+		bson.D{{"_id", id}},
+		bson.M{
+			"$set": bson.M{
+				"components": websiteComponents,
+			},
+		})
+	fmt.Println(result.MatchedCount, result.ModifiedCount)
+	if err != nil {
+		return err
+	}
 	return nil
 }

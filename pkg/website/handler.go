@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/yuedun/ginode-mongo/db"
+	"github.com/yuedun/ginode-mongo/pkg/component"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gin-gonic/gin"
@@ -133,6 +134,58 @@ func Delete(c *gin.Context) {
 		panic(err)
 	}
 
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
+
+}
+
+//GetWebsiteComponents
+func GetWebsiteComponents(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
+	websiteId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(websiteId)
+	if err != nil {
+		panic(err)
+	}
+	websiteService := NewService(db.NewDB("website"))
+	components, err := websiteService.GetWebsiteComponents(id)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("components", components)
+	c.JSON(http.StatusOK, gin.H{
+		"data":    components,
+		"message": "ok",
+	})
+
+}
+
+//UpdateWebsiteComponents
+func UpdateWebsiteComponents(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
+	websiteId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(websiteId)
+	var websiteComponents []component.Component
+	c.ShouldBind(&websiteComponents)
+	fmt.Println(websiteComponents)
+	websiteService := NewService(db.NewDB("website"))
+	err = websiteService.UpdateWebsiteComponents(id, websiteComponents)
+	if err != nil {
+		panic(err)
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 	})
