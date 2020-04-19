@@ -16,7 +16,7 @@ type (
 		GetComponent(id primitive.ObjectID) (component Component, err error)
 		CreateComponent(component *Component) (err error)
 		UpdateComponent(component *Component) (err error)
-		DeleteComponent(componentID int) (err error)
+		DeleteComponent(componentID primitive.ObjectID) (err error)
 	}
 )
 type componentService struct {
@@ -33,10 +33,10 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 	var cursor *mongo.Cursor
 	if cursor, err = u.mongo.Collection("component").Find(
 		context.Background(),
-		bson.M{},
+		bson.M{"status": 1},
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
-		options.Find().SetSort(bson.M{"_id": 1})); err != nil {
+		options.Find().SetSort(bson.M{"sort": 1})); err != nil {
 		return nil, 0, err
 	}
 	if err = cursor.All(context.Background(), &components); err != nil {
@@ -52,7 +52,7 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 	//	fmt.Println(component)
 	//	components = append(components, component)
 	//}
-	fmt.Println("component list", components)
+	fmt.Println(">>>>>>component list", components)
 	//查询集合里面有多少数据
 	if count, err = u.mongo.Collection("component").CountDocuments(context.Background(), bson.D{}); err != nil {
 		return nil, 0, err
@@ -78,6 +78,7 @@ func (u *componentService) GetComponent(id primitive.ObjectID) (component Compon
 }
 
 func (u *componentService) UpdateComponent(component *Component) (err error) {
+	fmt.Printf(">>>>>>%+v", component)
 	err = u.mongo.Collection("component").FindOneAndUpdate(
 		context.Background(),
 		bson.D{{"_id", component.ID}},
@@ -88,9 +89,14 @@ func (u *componentService) UpdateComponent(component *Component) (err error) {
 	return nil
 }
 
-func (u *componentService) DeleteComponent(componentID int) (err error) {
-	u.mongo.Collection("component").DeleteOne(context.Background(), bson.D{})
-	if err != nil {
+func (u *componentService) DeleteComponent(componentID primitive.ObjectID) (err error) {
+	result := u.mongo.Collection("component").FindOneAndUpdate(
+		context.Background(),
+		bson.D{{"_id", componentID}},
+		bson.M{"$set": bson.M{
+			"status": 0,
+		}})
+	if result.Err() != nil {
 		return err
 	}
 	return nil

@@ -21,6 +21,7 @@ type Component struct {
 	Elements      []Element          `json:"elements" bson:"elements,omitempty"`             // 多个同类型元素列表展示
 	Links         []Link             `json:"links" bson:"links,omitempty"`                   // 链接或按钮
 	Extras        []Component        `json:"extras" bson:"extras,omitempty"`                 // 其他补充内容
+	Sort          int                `json:"sort" bson:"sort,omitempty"`                     // 排序
 	CreatedAt     time.Time          `json:"created_at" bson:"created_at,omitempty"`
 	UpdatedAt     time.Time          `json:"updated_at" bson:"updated_at,omitempty"`
 }

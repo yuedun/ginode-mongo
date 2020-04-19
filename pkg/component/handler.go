@@ -110,7 +110,6 @@ func Update(c *gin.Context) {
 		})
 		return
 	}
-	fmt.Println(component)
 	err := componentService.UpdateComponent(&component)
 	if err != nil {
 		fmt.Println("err update:", err)
@@ -128,9 +127,13 @@ func Update(c *gin.Context) {
 
 //Delete
 func Delete(c *gin.Context) {
-	componentId, _ := strconv.Atoi(c.Param("id"))
+	componentId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(componentId)
+	if err != nil {
+		panic(err)
+	}
 	componentService := NewService(db.NewDB("website"))
-	err := componentService.DeleteComponent(componentId)
+	err = componentService.DeleteComponent(id)
 	if err != nil {
 		fmt.Println("err:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
