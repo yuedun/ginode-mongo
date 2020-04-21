@@ -10,7 +10,7 @@ import (
 	"github.com/yuedun/ginode-mongo/db"
 )
 
-//GetUserInfo
+// GetUserInfo 根据用户名获取用户信息
 func GetUserInfo(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -25,12 +25,14 @@ func GetUserInfo(c *gin.Context) {
 	if err != nil {
 		fmt.Println("err:", err)
 	}
+	user.Avatar = "default.jpg"
 	c.JSON(http.StatusOK, gin.H{
 		"data":    user,
 		"message": "ok",
 	})
 }
 
+// GetUserList 获取用户列表
 func GetUserList(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {

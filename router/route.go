@@ -20,7 +20,7 @@ func Register(router *gin.Engine) {
 		userRouter.POST("/login", middleware.Jwt().LoginHandler)
 		userRouter.GET("/refresh_token", middleware.Jwt().RefreshHandler) // 刷新token
 		userRouter.GET("/logout", middleware.Jwt().LogoutHandler)
-		userRouter.GET("/info/:id", user.GetUserInfo) //单独给某个路由添加中间件
+		userRouter.GET("/info/:id", middleware.Jwt().MiddlewareFunc(), user.GetUserInfo) //单独给某个路由添加中间件
 		userRouter.POST("/", user.CreateUser)
 		userRouter.GET("/list", user.GetUserList)
 		userRouter.PUT("/update/:id", user.UpdateUser)

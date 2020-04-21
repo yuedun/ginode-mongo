@@ -110,7 +110,7 @@ func Update(c *gin.Context) {
 		})
 		return
 	}
-	err := componentService.UpdateComponent(&component)
+	err := componentService.UpdateComponent(component)
 	if err != nil {
 		fmt.Println("err update:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{

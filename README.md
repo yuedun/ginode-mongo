@@ -112,3 +112,9 @@ golang.org/x/text => github.com/golang/text latest
 
  launchpad.net/gocheck => github.com/go-check/check v0.0.0-20180628173108-788fd7840127
 ```
+
+### mongodb bson类型：
+D: A BSON document. This type should be used in situations where order matters, such as MongoDB commands.
+M: An unordered map. It is the same as D, except it does not preserve order.
+A: A BSON array.
+E: A single element inside a D.

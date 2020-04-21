@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9dfc8497-0b77-47ad-b7f3-2da8e282929c" name="Default Changelist" comment="" />
+    <list default="true" id="9dfc8497-0b77-47ad-b7f3-2da8e282929c" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/mongdb.go" beforeDir="false" afterPath="$PROJECT_DIR$/db/mongdb.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/component/component-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/component/component-model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/component/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/component/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/component/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/component/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/user-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/user-model.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/router/route.go" beforeDir="false" afterPath="$PROJECT_DIR$/router/route.go" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,15 +76,6 @@
     </key>
   </component>
   <component name="RunManager" selected="Go Test.TestGetUser in github.com/yuedun/ginode-mongo/tests">
-    <configuration default="true" type="GoApplicationRunConfiguration" factoryName="Go Application">
-      <module name="ginode" />
-      <working_directory value="$PROJECT_DIR$/" />
-      <go_parameters value="-i" />
-      <kind value="FILE" />
-      <filePath value="$PROJECT_DIR$/" />
-      <directory value="$PROJECT_DIR$/" />
-      <method v="2" />
-    </configuration>
     <configuration name="go build main.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="ginode" />
       <working_directory value="$PROJECT_DIR$" />

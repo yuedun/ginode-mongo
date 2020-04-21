@@ -12,6 +12,7 @@ type User struct {
 	Username    string             `json:"username" bson:"username,omitempty"`
 	Password    string             `json:"password" bson:"password,omitempty"`
 	Gender      string             `json:"gender" bson:"gender,omitempty"`
+	Avatar      string             `json:"avatar" bson:"avatar,omitempty"`
 	Addr        string             `json:"addr" bson:"addr,omitempty"`
 	Email       string             `json:"email" bson:"email,omitempty"`
 	Status      int                `json:"status" bson:"status,omitempty"`

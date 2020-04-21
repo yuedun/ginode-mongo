@@ -15,7 +15,7 @@ type (
 		GetComponentList(offset, limit int64, search Component) (component []Component, count int64, err error)
 		GetComponent(id primitive.ObjectID) (component Component, err error)
 		CreateComponent(component *Component) (err error)
-		UpdateComponent(component *Component) (err error)
+		UpdateComponent(component Component) (err error)
 		DeleteComponent(componentID primitive.ObjectID) (err error)
 	}
 )
@@ -52,9 +52,9 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 	//	fmt.Println(component)
 	//	components = append(components, component)
 	//}
-	fmt.Println(">>>>>>component list", components)
+	fmt.Println(">>>>>>component list:", components)
 	//查询集合里面有多少数据
-	if count, err = u.mongo.Collection("component").CountDocuments(context.Background(), bson.D{}); err != nil {
+	if count, err = u.mongo.Collection("component").CountDocuments(context.Background(), bson.M{"status": 1}); err != nil {
 		return nil, 0, err
 	}
 
@@ -77,11 +77,25 @@ func (u *componentService) GetComponent(id primitive.ObjectID) (component Compon
 	return component, nil
 }
 
-func (u *componentService) UpdateComponent(component *Component) (err error) {
-	fmt.Printf(">>>>>>%+v", component)
+func (u *componentService) UpdateComponent(component Component) (err error) {
+	fmt.Printf(">>>>>>UpdateComponent:%+v", component)
 	err = u.mongo.Collection("component").FindOneAndUpdate(
 		context.Background(),
 		bson.D{{"_id", component.ID}},
+		//bson.M{"$set": bson.M{
+		//	"name": component.Name,
+		//	"category": component.Category,
+		//	"status": component.Status,
+		//	"title_1": component.Title1,
+		//	"title_2": component.Title2,
+		//	"title_3": component.Title3,
+		//	"description": component.Description,
+		//	"background_img": component.BackgroundImg,
+		//	"big_img": component.BigImg,
+		//	"links": component.Links,
+		//	"sort": component.Sort,
+		//},
+		// $set值直接传递结构体也是可以修改的，但是有个奇怪的现象是如果想要设置字段为空就不起作用，这是由于模型定义中的omitempty起来作用
 		bson.M{"$set": component}).Decode(&component)
 	if err != nil {
 		return err

@@ -76,10 +76,6 @@ func (this *userService) CreateUser(user *User) (err error) {
 	return nil
 }
 
-//D: A BSON document. This type should be used in situations where order matters, such as MongoDB commands.
-//M: An unordered map. It is the same as D, except it does not preserve order.
-//A: A BSON array.
-//E: A single element inside a D.
 func (this *userService) UpdateUser(user *User) (err error) {
 	result := this.mongo.Collection("user").FindOneAndUpdate(
 		context.Background(),
@@ -87,7 +83,7 @@ func (this *userService) UpdateUser(user *User) (err error) {
 		bson.M{
 			"$set": bson.M{
 				"name":     user.Username,
-				"category": user.Mobile,
+				"mobile": user.Mobile,
 			},
 		})
 	if result.Err() != nil {
@@ -97,7 +93,7 @@ func (this *userService) UpdateUser(user *User) (err error) {
 }
 
 func (this *userService) DeleteUser(userID int) (err error) {
-	this.mongo.Collection("user").DeleteOne(context.Background(), bson.D{})
+	this.mongo.Collection("user").DeleteOne(context.Background(), bson.M{"_id": userID})
 	if err != nil {
 		return err
 	}
