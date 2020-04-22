@@ -167,7 +167,7 @@ func GetWebsiteComponents(c *gin.Context) {
 
 }
 
-//UpdateWebsiteComponents
+// UpdateWebsiteComponents 单独修改网站组件
 func UpdateWebsiteComponents(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -189,5 +189,29 @@ func UpdateWebsiteComponents(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 	})
+}
 
+// CopyPage 复制网站（页面），多个页面组成一个网站
+func CopyPage(c *gin.Context) {
+	defer func() {
+		if err := recover(); err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{
+				"message": err.(error).Error(),
+			})
+		}
+	}()
+	websiteId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(websiteId)
+	if err != nil {
+		panic(err)
+	}
+	url := c.Param("url")
+	websiteService := NewService(db.NewDB("website"))
+	err = websiteService.CopyPage(id, url)
+	if err != nil {
+		panic(err)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"message": "ok",
+	})
 }

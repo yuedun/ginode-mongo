@@ -21,6 +21,7 @@ type (
 		DeleteWebsite(websiteID primitive.ObjectID) (err error)
 		GetWebsiteComponents(websiteID primitive.ObjectID) (components []component.Component, err error)
 		UpdateWebsiteComponents(id primitive.ObjectID, websiteComponents []component.Component) error
+		CopyPage(id primitive.ObjectID, url string) error
 	}
 )
 type websiteService struct {
@@ -138,5 +139,28 @@ func (this *websiteService) UpdateWebsiteComponents(id primitive.ObjectID, websi
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func (this *websiteService) CopyPage(id primitive.ObjectID, url string) error {
+	fmt.Println(id, url)
+	website := Website{}
+	err := this.mongo.Collection("website").FindOne(
+		context.Background(),
+		bson.D{{"_id", id}}).Decode(&website)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	website.ID = primitive.NewObjectID()
+	website.URL = url
+	result, err := this.mongo.Collection("website").InsertOne(
+		context.Background(),
+		website)
+	if err != nil {
+		fmt.Println(err)
+		return err
+	}
+	fmt.Println(result.InsertedID)
 	return nil
 }

@@ -82,7 +82,7 @@ func (this *userService) UpdateUser(user *User) (err error) {
 		bson.D{{"_id", user.ID}},
 		bson.M{
 			"$set": bson.M{
-				"name":     user.Username,
+				"name":   user.Username,
 				"mobile": user.Mobile,
 			},
 		})
