@@ -14,7 +14,6 @@ type Website struct {
 	Keywords    string             `json:"keywords" bson:"keywords,omitempty"`       //关键字 TDK keywords
 	Icon        string             `json:"icon" bson:"icon,omitempty"`               //图标
 	Category    string             `json:"category" bson:"category,omitempty"`       //网站分类
-	URL         string             `json:"url" bson:"url,omitempty"`                 //网站地址
 	Status      int                `json:"status" bson:"status,omitempty"`           //状态
 	CreatedAt   time.Time          `json:"created_at" bson:"created_at,omitempty"`
 	UpdatedAt   time.Time          `json:"updated_at" bson:"updated_at,omitempty"`

@@ -3,8 +3,7 @@ package website
 import (
 	"context"
 	"fmt"
-
-	"github.com/yuedun/ginode-mongo/pkg/component"
+	"github.com/yuedun/ginode-mongo/pkg/page"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -15,13 +14,10 @@ import (
 type (
 	WebsiteService interface {
 		GetWebsiteList(offset, limit int64, search Website) (website []Website, count int64, err error)
-		GetWebsite(userID primitive.ObjectID, url string) (website Website, err error)
+		GetWebsite(name, url string) (website Website, pageData page.Page, err error)
 		CreateWebsite(website *Website) (err error)
 		UpdateWebsite(website *Website) (err error)
 		DeleteWebsite(userID primitive.ObjectID, websiteID primitive.ObjectID) (err error)
-		GetWebsiteComponents(userID primitive.ObjectID, websiteID primitive.ObjectID) (components []component.Component, err error)
-		UpdateWebsiteComponents(userID primitive.ObjectID, id primitive.ObjectID, websiteComponents []component.Component) error
-		CopyPage(userID primitive.ObjectID, id primitive.ObjectID, url string) error
 	}
 )
 type websiteService struct {
@@ -38,7 +34,7 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	var cursor *mongo.Cursor
 	if cursor, err = this.mongo.Collection("website").Find(
 		context.Background(),
-		bson.M{}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
+		bson.M{"websiteID": search.UserID}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
 		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
@@ -54,7 +50,7 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	}
 	fmt.Printf("数据：%v\n", websites)
 	//查询集合里面有多少数据
-	if count, err = this.mongo.Collection("website").CountDocuments(context.Background(), bson.M{}); err != nil {
+	if count, err = this.mongo.Collection("website").CountDocuments(context.Background(), bson.M{"websiteID": search.UserID}); err != nil {
 		return nil, 0, err
 	}
 
@@ -62,14 +58,24 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	return websites, count, err
 }
 
-func (this *websiteService) GetWebsite(userID primitive.ObjectID, url string) (website Website, err error) {
+func (this *websiteService) GetWebsite(name, url string) (websiteData Website, pageData page.Page, err error) {
 	//没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
-	if err = this.mongo.Collection("website").FindOne(context.Background(), bson.M{"url": url}).Decode(&website); err != nil {
+	website := Website{}
+	if err = this.mongo.Collection("website").FindOne(
+		context.Background(),
+		bson.M{"url": name}).Decode(&website); err != nil {
 		fmt.Println("get website err:", err.Error())
-		return Website{}, err
+		return website, pageData, err
 	}
-	fmt.Printf("数据:%+v\n", website)
-	return website, nil
+	fmt.Printf("website数据:%+v\n", website)
+	if err = this.mongo.Collection("page").FindOne(
+		context.Background(),
+		bson.M{"website_id": website.ID, "url": url}).Decode(&pageData); err != nil {
+		fmt.Println("get page err:", err.Error())
+		return website, pageData, err
+	}
+	fmt.Printf("page数据:%+v\n", pageData)
+	return website, pageData, nil
 }
 
 func (this *websiteService) CreateWebsite(website *Website) (err error) {
@@ -83,12 +89,14 @@ func (this *websiteService) CreateWebsite(website *Website) (err error) {
 func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 	result, err := this.mongo.Collection("website").UpdateOne(
 		context.Background(),
-		bson.D{{"_id", website.ID}},
+		bson.M{
+			"_id":    website.ID,
+			"userID": website.UserID,
+		},
 		bson.M{
 			"$set": bson.M{
 				"name":        website.Name,
 				"category":    website.Category,
-				"url":         website.URL,
 				"icon":        website.Icon,
 				"keywords":    website.Keywords,
 				"description": website.Description,
@@ -103,59 +111,10 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 }
 
 func (this *websiteService) DeleteWebsite(userID, websiteID primitive.ObjectID) (err error) {
-	result, err := this.mongo.Collection("website").DeleteOne(context.Background(), bson.M{"_id": websiteID})
+	result, err := this.mongo.Collection("website").DeleteOne(context.Background(), bson.M{"_id": websiteID, "userID": userID})
 	if err != nil {
 		return err
 	}
 	fmt.Println(result.DeletedCount)
-	return nil
-}
-
-func (this *websiteService) GetWebsiteComponents(userID, websiteID primitive.ObjectID) (components []component.Component, err error) {
-	website := Website{}
-	err = this.mongo.Collection("website").FindOne(context.Background(), bson.M{"_id": websiteID}).Decode(&website)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(website)
-	return components, nil
-}
-
-func (this *websiteService) UpdateWebsiteComponents(userID, id primitive.ObjectID, websiteComponents []component.Component) error {
-	result, err := this.mongo.Collection("website").UpdateOne(
-		context.Background(),
-		bson.D{{"_id", id}},
-		bson.M{
-			"$set": bson.M{
-				"components": websiteComponents,
-			},
-		})
-	fmt.Println(result.MatchedCount, result.ModifiedCount)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (this *websiteService) CopyPage(userID, id primitive.ObjectID, url string) error {
-	fmt.Println(id, url)
-	website := Website{}
-	err := this.mongo.Collection("website").FindOne(
-		context.Background(),
-		bson.D{{"_id", id}}).Decode(&website)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	website.ID = primitive.NewObjectID()
-	website.URL = url
-	result, err := this.mongo.Collection("website").InsertOne(
-		context.Background(),
-		website)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	fmt.Println(result.InsertedID)
 	return nil
 }

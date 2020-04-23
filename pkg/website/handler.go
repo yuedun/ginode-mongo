@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/yuedun/ginode-mongo/db"
-	"github.com/yuedun/ginode-mongo/pkg/component"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 
 	"github.com/gin-gonic/gin"
@@ -64,7 +63,7 @@ func WebsiteList(c *gin.Context) {
 	})
 }
 
-// 获取单个网站
+// 获取单个网站，对外提供
 func GetWebsite(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -73,15 +72,11 @@ func GetWebsite(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
 	webService := NewService(db.NewDB("website"))
 	name := c.Query("name")
-	fmt.Println("url:", name)
-	website, err := webService.GetWebsite(userID, name)
+	url := c.Query("url")
+	fmt.Println("name:", name, url)
+	website , page, err := webService.GetWebsite(name, url)
 	if err != nil {
 		c.JSON(http.StatusNoContent, gin.H{
 			"err": err.Error(),
@@ -89,7 +84,8 @@ func GetWebsite(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data": website,
+		"website": website,
+		"page": page,
 	})
 
 }
@@ -186,95 +182,4 @@ func Delete(c *gin.Context) {
 		"message": "ok",
 	})
 
-}
-
-//GetWebsiteComponents
-func GetWebsiteComponents(c *gin.Context) {
-	defer func() {
-		if err := recover(); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": err.(error).Error(),
-			})
-		}
-	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
-	websiteId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(websiteId)
-	if err != nil {
-		panic(err)
-	}
-	websiteService := NewService(db.NewDB("website"))
-	components, err := websiteService.GetWebsiteComponents(userID, id)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("components", components)
-	c.JSON(http.StatusOK, gin.H{
-		"data":    components,
-		"message": "ok",
-	})
-
-}
-
-// UpdateWebsiteComponents 单独修改网站组件
-func UpdateWebsiteComponents(c *gin.Context) {
-	defer func() {
-		if err := recover(); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": err.(error).Error(),
-			})
-		}
-	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
-	websiteId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(websiteId)
-	var websiteComponents []component.Component
-	c.ShouldBind(&websiteComponents)
-	fmt.Println(websiteComponents)
-	websiteService := NewService(db.NewDB("website"))
-	err = websiteService.UpdateWebsiteComponents(userID, id, websiteComponents)
-	if err != nil {
-		panic(err)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": "ok",
-	})
-}
-
-// CopyPage 复制网站（页面），多个页面组成一个网站
-func CopyPage(c *gin.Context) {
-	defer func() {
-		if err := recover(); err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{
-				"message": err.(error).Error(),
-			})
-		}
-	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
-	websiteId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(websiteId)
-	if err != nil {
-		panic(err)
-	}
-	url := c.Param("url")
-	websiteService := NewService(db.NewDB("website"))
-	err = websiteService.CopyPage(userID, id, url)
-	if err != nil {
-		panic(err)
-	}
-	c.JSON(http.StatusOK, gin.H{
-		"message": "ok",
-	})
 }

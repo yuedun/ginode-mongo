@@ -35,9 +35,6 @@ func Register(router *gin.Engine) {
 		websiteRouter.POST("/create", website.Create)
 		websiteRouter.PUT("/update", website.Update)
 		websiteRouter.DELETE("/delete/:id", website.Delete)
-		websiteRouter.GET("/getWebsiteComponents/:id", website.GetWebsiteComponents)
-		websiteRouter.PUT("/updateWebsiteComponents/:id", website.UpdateWebsiteComponents)
-		websiteRouter.GET("/copyPage/:id/:url", website.CopyPage)
 	}
 	//page路由注册
 	pageRouter := router.Group("/page")
