@@ -6,11 +6,11 @@ require (
 	github.com/appleboy/gin-jwt/v2 v2.6.3
 	github.com/gin-gonic/gin v1.6.2
 	github.com/golang/protobuf v1.4.0 // indirect
-	github.com/klauspost/compress v1.10.4 // indirect
+	github.com/klauspost/compress v1.10.5 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	go.mongodb.org/mongo-driver v1.3.2
-	golang.org/x/crypto v0.0.0-20200420201142-3c4aac89819a // indirect
+	golang.org/x/crypto v0.0.0-20200422194213-44a606286825 // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
 	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect

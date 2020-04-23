@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -63,6 +64,7 @@ func Auth() gin.HandlerFunc {
 }
 
 type User struct {
+	userID    string
 	UserName  string
 	LoginTime time.Time
 }
@@ -72,7 +74,7 @@ type login struct {
 }
 
 func Jwt() *jwt.GinJWTMiddleware {
-	var identityKey = "username"
+	var identityKey = "user_id"
 	// the jwt middleware
 	authMiddleware, err := jwt.New(&jwt.GinJWTMiddleware{
 		Realm:       "test zone",
@@ -84,7 +86,8 @@ func Jwt() *jwt.GinJWTMiddleware {
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
 			if v, ok := data.(*User); ok {
 				return jwt.MapClaims{
-					identityKey: v.UserName,
+					identityKey: v.userID,
+					"username":  v.UserName,
 				}
 			}
 			return jwt.MapClaims{}
@@ -93,7 +96,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 		IdentityHandler: func(c *gin.Context) interface{} {
 			claims := jwt.ExtractClaims(c)
 			return &User{
-				UserName: claims[identityKey].(string),
+				userID: claims[identityKey].(string),
 			}
 		},
 		// 首次通过用户名密码登录认证
@@ -113,6 +116,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 			if (user.Username == username && user.Password == password) || (username == "test" && password == "test") {
 				// 返回的数据用在上面定义的PayloadFunc函数中
 				return &User{
+					userID:    user.ID.Hex(),
 					UserName:  username,
 					LoginTime: time.Now(),
 				}, nil
@@ -120,16 +124,17 @@ func Jwt() *jwt.GinJWTMiddleware {
 
 			return nil, jwt.ErrFailedAuthentication
 		},
-		// 登录以后通过token来获取用户标识，检测是否通过认证
+		// 通过token来获取用户标识，检测是否通过认证
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if v, ok := data.(*User); ok && v.UserName == "test" {
+			claims := jwt.ExtractClaims(c)
+			if v, ok := data.(*User); ok && v.userID == claims[identityKey] {
 				return true
 			}
-
 			return false
 		},
 		// 获取不到token或解析token失败时如何返回信息
 		Unauthorized: func(c *gin.Context, code int, message string) {
+			fmt.Println(">>>>>>>验证未通过：", message)
 			c.JSON(code, gin.H{
 				"code":    code,
 				"message": message,

@@ -15,13 +15,13 @@ import (
 type (
 	WebsiteService interface {
 		GetWebsiteList(offset, limit int64, search Website) (website []Website, count int64, err error)
-		GetWebsite(url string) (website Website, err error)
+		GetWebsite(userID primitive.ObjectID, url string) (website Website, err error)
 		CreateWebsite(website *Website) (err error)
 		UpdateWebsite(website *Website) (err error)
-		DeleteWebsite(websiteID primitive.ObjectID) (err error)
-		GetWebsiteComponents(websiteID primitive.ObjectID) (components []component.Component, err error)
-		UpdateWebsiteComponents(id primitive.ObjectID, websiteComponents []component.Component) error
-		CopyPage(id primitive.ObjectID, url string) error
+		DeleteWebsite(userID primitive.ObjectID, websiteID primitive.ObjectID) (err error)
+		GetWebsiteComponents(userID primitive.ObjectID, websiteID primitive.ObjectID) (components []component.Component, err error)
+		UpdateWebsiteComponents(userID primitive.ObjectID, id primitive.ObjectID, websiteComponents []component.Component) error
+		CopyPage(userID primitive.ObjectID, id primitive.ObjectID, url string) error
 	}
 )
 type websiteService struct {
@@ -50,9 +50,6 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 		if err = cursor.Decode(&website); err != nil {
 			return nil, 0, err
 		}
-		if website.Components == nil {
-			website.Components = []component.Component{}
-		}
 		websites = append(websites, website)
 	}
 	fmt.Printf("数据：%v\n", websites)
@@ -65,7 +62,7 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	return websites, count, err
 }
 
-func (this *websiteService) GetWebsite(url string) (website Website, err error) {
+func (this *websiteService) GetWebsite(userID primitive.ObjectID, url string) (website Website, err error) {
 	//没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
 	if err = this.mongo.Collection("website").FindOne(context.Background(), bson.M{"url": url}).Decode(&website); err != nil {
 		fmt.Println("get website err:", err.Error())
@@ -91,7 +88,6 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 			"$set": bson.M{
 				"name":        website.Name,
 				"category":    website.Category,
-				"components":  website.Components,
 				"url":         website.URL,
 				"icon":        website.Icon,
 				"keywords":    website.Keywords,
@@ -106,7 +102,7 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 	return nil
 }
 
-func (this *websiteService) DeleteWebsite(websiteID primitive.ObjectID) (err error) {
+func (this *websiteService) DeleteWebsite(userID, websiteID primitive.ObjectID) (err error) {
 	result, err := this.mongo.Collection("website").DeleteOne(context.Background(), bson.M{"_id": websiteID})
 	if err != nil {
 		return err
@@ -115,18 +111,17 @@ func (this *websiteService) DeleteWebsite(websiteID primitive.ObjectID) (err err
 	return nil
 }
 
-func (this *websiteService) GetWebsiteComponents(websiteID primitive.ObjectID) (components []component.Component, err error) {
+func (this *websiteService) GetWebsiteComponents(userID, websiteID primitive.ObjectID) (components []component.Component, err error) {
 	website := Website{}
 	err = this.mongo.Collection("website").FindOne(context.Background(), bson.M{"_id": websiteID}).Decode(&website)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(website)
-	components = website.Components
 	return components, nil
 }
 
-func (this *websiteService) UpdateWebsiteComponents(id primitive.ObjectID, websiteComponents []component.Component) error {
+func (this *websiteService) UpdateWebsiteComponents(userID, id primitive.ObjectID, websiteComponents []component.Component) error {
 	result, err := this.mongo.Collection("website").UpdateOne(
 		context.Background(),
 		bson.D{{"_id", id}},
@@ -142,7 +137,7 @@ func (this *websiteService) UpdateWebsiteComponents(id primitive.ObjectID, websi
 	return nil
 }
 
-func (this *websiteService) CopyPage(id primitive.ObjectID, url string) error {
+func (this *websiteService) CopyPage(userID, id primitive.ObjectID, url string) error {
 	fmt.Println(id, url)
 	website := Website{}
 	err := this.mongo.Collection("website").FindOne(

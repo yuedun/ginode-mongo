@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/yuedun/ginode-mongo/middleware"
 	"github.com/yuedun/ginode-mongo/pkg/component"
+	"github.com/yuedun/ginode-mongo/pkg/page"
 	"github.com/yuedun/ginode-mongo/pkg/user"
 	"github.com/yuedun/ginode-mongo/pkg/website"
 )
@@ -37,6 +38,18 @@ func Register(router *gin.Engine) {
 		websiteRouter.GET("/getWebsiteComponents/:id", website.GetWebsiteComponents)
 		websiteRouter.PUT("/updateWebsiteComponents/:id", website.UpdateWebsiteComponents)
 		websiteRouter.GET("/copyPage/:id/:url", website.CopyPage)
+	}
+	//page路由注册
+	pageRouter := router.Group("/page")
+	pageRouter.Use(middleware.Jwt().MiddlewareFunc())
+	{
+		pageRouter.GET("/list", page.PageList)
+		pageRouter.POST("/create", page.Create)
+		pageRouter.PUT("/update", page.Update)
+		pageRouter.DELETE("/delete/:id", page.Delete)
+		pageRouter.GET("/getPageComponents/:id", page.GetPageComponents)
+		pageRouter.PUT("/updatePageComponents/:id", page.UpdatePageComponents)
+		pageRouter.GET("/copyPage/:id/:url", page.CopyPage)
 	}
 	//component路由注册
 	componentRouter := router.Group("/component")

@@ -1,8 +1,7 @@
-package website
+package page
 
 import (
 	"fmt"
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"net/http"
 	"strconv"
 	"time"
@@ -16,8 +15,8 @@ import (
 
 type any = interface{}
 
-//WebsiteList列表
-func WebsiteList(c *gin.Context) {
+//PageList列表
+func PageList(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -25,11 +24,6 @@ func WebsiteList(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
 	offset, err := strconv.ParseInt(c.Query("offset"), 10, 64)
 	if err != nil {
 		offset = 0
@@ -38,16 +32,20 @@ func WebsiteList(c *gin.Context) {
 	if err != nil {
 		limit = 10
 	}
-	name := c.Query("name")
-	category := c.Query("category")
-	websiteSearch := Website{
-		UserID:   userID,
-		Name:     name,
-		Category: category,
-		Status:   1,
+	websiteID := c.Query("websiteID")
+	id, err := primitive.ObjectIDFromHex(websiteID)
+	if err != nil {
+		panic(err)
+	}
+	pageSearch := Page{
+		WebsiteID: id,
+		Status:    1,
 	}
 	wbService := NewService(db.NewDB("website"))
-	list, total, err := wbService.GetWebsiteList(offset, limit, websiteSearch)
+	list, total, err := wbService.GetPageList(offset, limit, pageSearch)
+	if err != nil {
+		panic(err)
+	}
 	data := map[string]any{
 		"result": list,
 		"count":  total,
@@ -65,7 +63,7 @@ func WebsiteList(c *gin.Context) {
 }
 
 // 获取单个网站
-func GetWebsite(c *gin.Context) {
+func GetPage(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -73,15 +71,10 @@ func GetWebsite(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
 	webService := NewService(db.NewDB("website"))
 	name := c.Query("name")
 	fmt.Println("url:", name)
-	website, err := webService.GetWebsite(userID, name)
+	page, err := webService.GetPage(name)
 	if err != nil {
 		c.JSON(http.StatusNoContent, gin.H{
 			"err": err.Error(),
@@ -89,7 +82,7 @@ func GetWebsite(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data": website,
+		"data": page,
 	})
 
 }
@@ -103,23 +96,22 @@ func Create(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
-	websiteService := NewService(db.NewDB("website"))
-	wbObj := Website{}
+	pageService := NewService(db.NewDB("website"))
+	wbObj := Page{}
 	c.ShouldBind(&wbObj)
 	wbObj.ID = primitive.NewObjectID()
-	wbObj.UserID = userID
 	wbObj.CreatedAt = time.Now()
 	wbObj.UpdatedAt = time.Now()
 	wbObj.Status = 1
 	fmt.Println(wbObj)
-	err = websiteService.CreateWebsite(&wbObj)
+	err := pageService.CreatePage(&wbObj)
 	if err != nil {
-		panic(err)
+		fmt.Println("err:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"data":    wbObj,
+			"message": "ok",
+		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"data":    wbObj,
@@ -136,22 +128,20 @@ func Update(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
+	pageService := NewService(db.NewDB("website"))
+	page := Page{}
+	c.ShouldBind(&page)
+	fmt.Println(page)
+	err := pageService.UpdatePage(&page)
 	if err != nil {
-		panic(err)
-	}
-	websiteService := NewService(db.NewDB("website"))
-	website := Website{}
-	c.ShouldBind(&website)
-	website.UserID = userID
-	fmt.Println(website)
-	err = websiteService.UpdateWebsite(&website)
-	if err != nil {
-		panic(err)
+		fmt.Println("err:", err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": err.Error(),
+		})
+		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
-			"data":    website,
+			"data":    page,
 			"message": "ok",
 		})
 	}
@@ -166,18 +156,13 @@ func Delete(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
+	pageId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageId)
 	if err != nil {
 		panic(err)
 	}
-	websiteId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(websiteId)
-	if err != nil {
-		panic(err)
-	}
-	websiteService := NewService(db.NewDB("website"))
-	err = websiteService.DeleteWebsite(userID, id)
+	pageService := NewService(db.NewDB("website"))
+	err = pageService.DeletePage(id)
 	if err != nil {
 		panic(err)
 	}
@@ -185,11 +170,10 @@ func Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "ok",
 	})
-
 }
 
-//GetWebsiteComponents
-func GetWebsiteComponents(c *gin.Context) {
+//GetPageComponents
+func GetPageComponents(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -197,18 +181,13 @@ func GetWebsiteComponents(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
+	pageId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageId)
 	if err != nil {
 		panic(err)
 	}
-	websiteId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(websiteId)
-	if err != nil {
-		panic(err)
-	}
-	websiteService := NewService(db.NewDB("website"))
-	components, err := websiteService.GetWebsiteComponents(userID, id)
+	pageService := NewService(db.NewDB("website"))
+	components, err := pageService.GetPageComponents(id)
 	if err != nil {
 		panic(err)
 	}
@@ -220,8 +199,8 @@ func GetWebsiteComponents(c *gin.Context) {
 
 }
 
-// UpdateWebsiteComponents 单独修改网站组件
-func UpdateWebsiteComponents(c *gin.Context) {
+// UpdatePageComponents 单独修改网站组件
+func UpdatePageComponents(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -229,18 +208,13 @@ func UpdateWebsiteComponents(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
-	websiteId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(websiteId)
-	var websiteComponents []component.Component
-	c.ShouldBind(&websiteComponents)
-	fmt.Println(websiteComponents)
-	websiteService := NewService(db.NewDB("website"))
-	err = websiteService.UpdateWebsiteComponents(userID, id, websiteComponents)
+	pageId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageId)
+	var pageComponents []component.Component
+	c.ShouldBind(&pageComponents)
+	fmt.Println(pageComponents)
+	pageService := NewService(db.NewDB("website"))
+	err = pageService.UpdatePageComponents(id, pageComponents)
 	if err != nil {
 		panic(err)
 	}
@@ -258,19 +232,14 @@ func CopyPage(c *gin.Context) {
 			})
 		}
 	}()
-	claims := jwt.ExtractClaims(c)
-	userID, err := primitive.ObjectIDFromHex(claims["user_id"].(string))
-	if err != nil {
-		panic(err)
-	}
-	websiteId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(websiteId)
+	pageId := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageId)
 	if err != nil {
 		panic(err)
 	}
 	url := c.Param("url")
-	websiteService := NewService(db.NewDB("website"))
-	err = websiteService.CopyPage(userID, id, url)
+	pageService := NewService(db.NewDB("website"))
+	err = pageService.CopyPage(id, url)
 	if err != nil {
 		panic(err)
 	}
