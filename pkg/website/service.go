@@ -34,7 +34,7 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	var cursor *mongo.Cursor
 	if cursor, err = this.mongo.Collection("website").Find(
 		context.Background(),
-		bson.M{"websiteID": search.UserID}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
+		bson.M{"user_id": search.UserID}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
 		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
@@ -58,6 +58,7 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	return websites, count, err
 }
 
+// 对外提供，不与用户关联
 func (this *websiteService) GetWebsite(name, url string) (websiteData Website, pageData page.Page, err error) {
 	//没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
 	website := Website{}
@@ -90,8 +91,8 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 	result, err := this.mongo.Collection("website").UpdateOne(
 		context.Background(),
 		bson.M{
-			"_id":    website.ID,
-			"userID": website.UserID,
+			"_id":     website.ID,
+			"user_id": website.UserID,
 		},
 		bson.M{
 			"$set": bson.M{
@@ -111,7 +112,7 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 }
 
 func (this *websiteService) DeleteWebsite(userID, websiteID primitive.ObjectID) (err error) {
-	result, err := this.mongo.Collection("website").DeleteOne(context.Background(), bson.M{"_id": websiteID, "userID": userID})
+	result, err := this.mongo.Collection("website").DeleteOne(context.Background(), bson.M{"_id": websiteID, "user_id": userID})
 	if err != nil {
 		return err
 	}

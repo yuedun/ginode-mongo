@@ -76,7 +76,7 @@ func GetWebsite(c *gin.Context) {
 	name := c.Query("name")
 	url := c.Query("url")
 	fmt.Println("name:", name, url)
-	website , page, err := webService.GetWebsite(name, url)
+	website, page, err := webService.GetWebsite(name, url)
 	if err != nil {
 		c.JSON(http.StatusNoContent, gin.H{
 			"err": err.Error(),
@@ -85,7 +85,7 @@ func GetWebsite(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"website": website,
-		"page": page,
+		"page":    page,
 	})
 
 }
