@@ -3,6 +3,7 @@ package website
 import (
 	"context"
 	"fmt"
+
 	"github.com/yuedun/ginode-mongo/pkg/page"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -30,6 +31,10 @@ func NewService(mongo *mongo.Database) WebsiteService {
 	}
 }
 
+/**
+ * 对website的操作需要加上user_id条件，避免越权操作，每个用户只能查询和操作自己的数据，而不能操作其他用户的数据。
+ * mongodb的id有个好处是不能遍历的，每台机器生成的id都不同，所以无法模拟遍历，要查到website下的page只能通过已获得的websiteID来获取，不能自己伪造websiteID来获取
+ */
 func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) (websites []Website, count int64, err error) {
 	var cursor *mongo.Cursor
 	if cursor, err = this.mongo.Collection("website").Find(
@@ -50,7 +55,7 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	}
 	fmt.Printf("数据：%v\n", websites)
 	//查询集合里面有多少数据
-	if count, err = this.mongo.Collection("website").CountDocuments(context.Background(), bson.M{"websiteID": search.UserID}); err != nil {
+	if count, err = this.mongo.Collection("website").CountDocuments(context.Background(), bson.M{"user_id": search.UserID}); err != nil {
 		return nil, 0, err
 	}
 
