@@ -112,10 +112,10 @@ func (this *websiteService) UpdateWebsite(website *Website) (err error) {
 }
 
 func (this *websiteService) DeleteWebsite(userID, websiteID primitive.ObjectID) (err error) {
-	result, err := this.mongo.Collection("website").DeleteOne(context.Background(), bson.M{"_id": websiteID, "user_id": userID})
+	result, err := this.mongo.Collection("website").UpdateOne(context.Background(), bson.M{"_id": websiteID, "user_id": userID}, bson.M{"status": 0})
 	if err != nil {
 		return err
 	}
-	fmt.Println(result.DeletedCount)
+	fmt.Println(result.ModifiedCount)
 	return nil
 }

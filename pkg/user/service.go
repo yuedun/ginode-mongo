@@ -93,9 +93,10 @@ func (this *userService) UpdateUser(user *User) (err error) {
 }
 
 func (this *userService) DeleteUser(userID int) (err error) {
-	this.mongo.Collection("user").DeleteOne(context.Background(), bson.M{"_id": userID})
+	result, err:=this.mongo.Collection("user").UpdateOne(context.Background(), bson.M{"_id": userID}, bson.M{"status": 0})
 	if err != nil {
 		return err
 	}
+	fmt.Println(result.ModifiedCount)
 	return nil
 }

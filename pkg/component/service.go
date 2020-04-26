@@ -104,14 +104,15 @@ func (u *componentService) UpdateComponent(component Component) (err error) {
 }
 
 func (u *componentService) DeleteComponent(componentID primitive.ObjectID) (err error) {
-	result := u.mongo.Collection("component").FindOneAndUpdate(
+	result, err := u.mongo.Collection("component").UpdateOne(
 		context.Background(),
 		bson.D{{"_id", componentID}},
 		bson.M{"$set": bson.M{
 			"status": 0,
 		}})
-	if result.Err() != nil {
+	if err != nil {
 		return err
 	}
+	fmt.Println(result.ModifiedCount)
 	return nil
 }

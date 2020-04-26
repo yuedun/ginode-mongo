@@ -3,12 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="9dfc8497-0b77-47ad-b7f3-2da8e282929c" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/component/component-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/component/component-model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/page/page-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/page/page-model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/user/user-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/user-model.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/website/handler.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/handler.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/conf-sample.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/conf-sample.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/component/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/component/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/page/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/page/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pkg/user/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/user/service.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pkg/website/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/website/website-model.go" beforeDir="false" afterPath="$PROJECT_DIR$/pkg/website/website-model.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +56,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
-    <property name="last_opened_file_path" value="D:/workspace-go/src/metal" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="editing.templates" />

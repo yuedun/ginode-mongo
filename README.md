@@ -10,6 +10,8 @@ beego框架自带了本地调试工具，在修改代码后可以自动重启，
 但是`bee`不能使用在非`GOPATH`目录下
 
 另外一种使用了`dogo`，本项目包含了dogo.json配置，可根据自己项目路径修改
+> go get github.com/liudng/dogo
+
 > dogo
 
 ## 目录结构

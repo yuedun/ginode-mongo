@@ -1,4 +1,4 @@
-host: localhost:3306
+host: localhost:27017
 user: root
 pwd: root
 dbname: website

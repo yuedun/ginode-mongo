@@ -108,11 +108,11 @@ func (this *pageService) UpdatePage(page *Page) (err error) {
 }
 
 func (this *pageService) DeletePage(pageID primitive.ObjectID) (err error) {
-	result, err := this.mongo.Collection("page").DeleteOne(context.Background(), bson.M{"_id": pageID})
+	result, err := this.mongo.Collection("page").UpdateOne(context.Background(), bson.M{"_id": pageID}, bson.M{"status": 0})
 	if err != nil {
 		return err
 	}
-	fmt.Println(result.DeletedCount)
+	fmt.Println(result.ModifiedCount)
 	return nil
 }
 
