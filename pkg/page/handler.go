@@ -97,24 +97,25 @@ func Create(c *gin.Context) {
 		}
 	}()
 	pageService := NewService(db.NewDB("website"))
-	wbObj := Page{}
-	c.ShouldBind(&wbObj)
-	wbObj.ID = primitive.NewObjectID()
-	wbObj.CreatedAt = time.Now()
-	wbObj.UpdatedAt = time.Now()
-	wbObj.Status = 1
-	fmt.Println(wbObj)
-	err := pageService.CreatePage(&wbObj)
+	newObj := Page{}
+	c.ShouldBind(&newObj)
+	//newObj.ID = primitive.NewObjectID()
+	websiteId := c.Param("websiteId")
+	webId, err := primitive.ObjectIDFromHex(websiteId)
 	if err != nil {
-		fmt.Println("err:", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"data":    wbObj,
-			"message": "ok",
-		})
-		return
+		panic(err)
+	}
+	newObj.WebsiteID = webId
+	newObj.CreatedAt = time.Now()
+	newObj.UpdatedAt = time.Now()
+	newObj.Status = 1
+	fmt.Println(newObj)
+	err = pageService.CreatePage(&newObj)
+	if err != nil {
+		panic(err)
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data":    wbObj,
+		"data":    newObj,
 		"message": "ok",
 	})
 }

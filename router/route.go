@@ -41,7 +41,7 @@ func Register(router *gin.Engine) {
 	pageRouter.Use(middleware.Jwt().MiddlewareFunc())
 	{
 		pageRouter.GET("/list", page.PageList)
-		pageRouter.POST("/create", page.Create)
+		pageRouter.POST("/create/:websiteId", page.Create)
 		pageRouter.PUT("/update", page.Update)
 		pageRouter.DELETE("/delete/:id", page.Delete)
 		pageRouter.GET("/getPageComponents/:id", page.GetPageComponents)

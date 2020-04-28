@@ -38,7 +38,7 @@ func (this *pageService) GetPageList(offset, limit int64, search Page) (pages []
 	var cursor *mongo.Cursor
 	if cursor, err = this.mongo.Collection("page").Find(
 		context.Background(),
-		bson.M{"website_id": search.WebsiteID}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
+		bson.M{"website_id": search.WebsiteID, "status": 1}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
 		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
@@ -57,7 +57,7 @@ func (this *pageService) GetPageList(offset, limit int64, search Page) (pages []
 	}
 	fmt.Printf("数据：%v\n", pages)
 	//查询集合里面有多少数据
-	if count, err = this.mongo.Collection("page").CountDocuments(context.Background(), bson.M{"website_id": search.WebsiteID}); err != nil {
+	if count, err = this.mongo.Collection("page").CountDocuments(context.Background(), bson.M{"website_id": search.WebsiteID, "status": 1}); err != nil {
 		return nil, 0, err
 	}
 
@@ -79,10 +79,11 @@ func (this *pageService) GetPage(url string) (page Page, err error) {
 }
 
 func (this *pageService) CreatePage(page *Page) (err error) {
-	_, err = this.mongo.Collection("page").InsertOne(context.Background(), page)
+	result, err := this.mongo.Collection("page").InsertOne(context.Background(), page)
 	if err != nil {
 		return err
 	}
+	page.ID = result.InsertedID.(primitive.ObjectID)
 	return nil
 }
 
@@ -108,7 +109,11 @@ func (this *pageService) UpdatePage(page *Page) (err error) {
 }
 
 func (this *pageService) DeletePage(pageID primitive.ObjectID) (err error) {
-	result, err := this.mongo.Collection("page").UpdateOne(context.Background(), bson.M{"_id": pageID}, bson.M{"status": 0})
+	result, err := this.mongo.Collection("page").UpdateOne(context.Background(),
+		bson.M{"_id": pageID},
+		bson.M{
+			"$set": bson.M{"status": 0},
+		})
 	if err != nil {
 		return err
 	}

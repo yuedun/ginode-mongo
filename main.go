@@ -1,10 +1,11 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 	_ "github.com/yuedun/ginode-mongo/db"
 	"github.com/yuedun/ginode-mongo/router"
-	"net/http"
 )
 
 func main() {
