@@ -32,18 +32,18 @@ func NewService(mongo *mongo.Database) ComponentService {
 func (u *componentService) GetComponentList(offset, limit int64, search Component) (components []Component, count int64, err error) {
 	var cursor *mongo.Cursor
 	if cursor, err = u.mongo.Collection("component").Find(
-		context.Background(),
+		context.TODO(),
 		bson.M{"status": 1},
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
 		options.Find().SetSort(bson.M{"sort": 1})); err != nil {
 		return nil, 0, err
 	}
-	if err = cursor.All(context.Background(), &components); err != nil {
+	if err = cursor.All(context.TODO(), &components); err != nil {
 		return nil, 0, err
 	}
 	//如需对数据迭代处理使用下面方法，不需要则直接使用上面方法
-	//for cursor.Next(context.Background()) {
+	//for cursor.Next(context.TODO()) {
 	//	component := Component{}
 	//	if err = cursor.Decode(&component); err != nil {
 	//		fmt.Println(">>>>>>>>>.")
@@ -54,7 +54,7 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 	//}
 	fmt.Println(">>>>>>component list:", components)
 	//查询集合里面有多少数据
-	if count, err = u.mongo.Collection("component").CountDocuments(context.Background(), bson.M{"status": 1}); err != nil {
+	if count, err = u.mongo.Collection("component").CountDocuments(context.TODO(), bson.M{"status": 1}); err != nil {
 		return nil, 0, err
 	}
 
@@ -63,7 +63,7 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 }
 
 func (u *componentService) CreateComponent(component *Component) (err error) {
-	_, err = u.mongo.Collection("component").InsertOne(context.Background(), component)
+	_, err = u.mongo.Collection("component").InsertOne(context.TODO(), component)
 	if err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func (u *componentService) CreateComponent(component *Component) (err error) {
 }
 
 func (u *componentService) GetComponent(id primitive.ObjectID) (component Component, err error) {
-	if err = u.mongo.Collection("component").FindOne(context.Background(), bson.M{"_id": id}).Decode(&component); err != nil {
+	if err = u.mongo.Collection("component").FindOne(context.TODO(), bson.M{"_id": id}).Decode(&component); err != nil {
 		return Component{}, err
 	}
 	return component, nil
@@ -80,7 +80,7 @@ func (u *componentService) GetComponent(id primitive.ObjectID) (component Compon
 func (u *componentService) UpdateComponent(component Component) (err error) {
 	fmt.Printf(">>>>>>UpdateComponent:%+v", component)
 	err = u.mongo.Collection("component").FindOneAndUpdate(
-		context.Background(),
+		context.TODO(),
 		bson.D{{"_id", component.ID}},
 		//bson.M{"$set": bson.M{
 		//	"name": component.Name,
@@ -105,7 +105,7 @@ func (u *componentService) UpdateComponent(component Component) (err error) {
 
 func (u *componentService) DeleteComponent(componentID primitive.ObjectID) (err error) {
 	result, err := u.mongo.Collection("component").UpdateOne(
-		context.Background(),
+		context.TODO(),
 		bson.D{{"_id", componentID}},
 		bson.M{"$set": bson.M{
 			"status": 0,

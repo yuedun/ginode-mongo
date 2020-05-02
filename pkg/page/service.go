@@ -37,16 +37,16 @@ func NewService(mongo *mongo.Database) PageService {
 func (this *pageService) GetPageList(offset, limit int64, search Page) (pages []Page, count int64, err error) {
 	var cursor *mongo.Cursor
 	if cursor, err = this.mongo.Collection("page").Find(
-		context.Background(),
+		context.TODO(),
 		bson.M{"website_id": search.WebsiteID, "status": 1}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
 		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
 		return nil, 0, err
 	}
-	defer cursor.Close(context.Background())
+	defer cursor.Close(context.TODO())
 	page := Page{}
-	for cursor.Next(context.Background()) {
+	for cursor.Next(context.TODO()) {
 		if err = cursor.Decode(&page); err != nil {
 			return nil, 0, err
 		}
@@ -57,7 +57,7 @@ func (this *pageService) GetPageList(offset, limit int64, search Page) (pages []
 	}
 	fmt.Printf("数据：%v\n", pages)
 	//查询集合里面有多少数据
-	if count, err = this.mongo.Collection("page").CountDocuments(context.Background(), bson.M{"website_id": search.WebsiteID, "status": 1}); err != nil {
+	if count, err = this.mongo.Collection("page").CountDocuments(context.TODO(), bson.M{"website_id": search.WebsiteID, "status": 1}); err != nil {
 		return nil, 0, err
 	}
 
@@ -70,7 +70,7 @@ func (this *pageService) GetPageList(offset, limit int64, search Page) (pages []
 
 func (this *pageService) GetPage(url string) (page Page, err error) {
 	//没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
-	if err = this.mongo.Collection("page").FindOne(context.Background(), bson.M{"url": url}).Decode(&page); err != nil {
+	if err = this.mongo.Collection("page").FindOne(context.TODO(), bson.M{"url": url}).Decode(&page); err != nil {
 		fmt.Println("get page err:", err.Error())
 		return Page{}, err
 	}
@@ -79,7 +79,7 @@ func (this *pageService) GetPage(url string) (page Page, err error) {
 }
 
 func (this *pageService) CreatePage(page *Page) (err error) {
-	result, err := this.mongo.Collection("page").InsertOne(context.Background(), page)
+	result, err := this.mongo.Collection("page").InsertOne(context.TODO(), page)
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func (this *pageService) CreatePage(page *Page) (err error) {
 
 func (this *pageService) UpdatePage(page *Page) (err error) {
 	result, err := this.mongo.Collection("page").UpdateOne(
-		context.Background(),
+		context.TODO(),
 		bson.D{{"_id", page.ID}},
 		bson.M{
 			"$set": bson.M{
@@ -109,7 +109,7 @@ func (this *pageService) UpdatePage(page *Page) (err error) {
 }
 
 func (this *pageService) DeletePage(pageID primitive.ObjectID) (err error) {
-	result, err := this.mongo.Collection("page").UpdateOne(context.Background(),
+	result, err := this.mongo.Collection("page").UpdateOne(context.TODO(),
 		bson.M{"_id": pageID},
 		bson.M{
 			"$set": bson.M{"status": 0},
@@ -123,7 +123,7 @@ func (this *pageService) DeletePage(pageID primitive.ObjectID) (err error) {
 
 func (this *pageService) GetPageComponents(pageID primitive.ObjectID) (components []component.Component, err error) {
 	page := Page{}
-	err = this.mongo.Collection("page").FindOne(context.Background(), bson.M{"_id": pageID}).Decode(&page)
+	err = this.mongo.Collection("page").FindOne(context.TODO(), bson.M{"_id": pageID}).Decode(&page)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func (this *pageService) GetPageComponents(pageID primitive.ObjectID) (component
 
 func (this *pageService) UpdatePageComponents(id primitive.ObjectID, pageComponents []component.Component) error {
 	result, err := this.mongo.Collection("page").UpdateOne(
-		context.Background(),
+		context.TODO(),
 		bson.D{{"_id", id}},
 		bson.M{
 			"$set": bson.M{
@@ -152,7 +152,7 @@ func (this *pageService) CopyPage(id primitive.ObjectID, url string) error {
 	fmt.Println(id, url)
 	page := Page{}
 	err := this.mongo.Collection("page").FindOne(
-		context.Background(),
+		context.TODO(),
 		bson.D{{"_id", id}}).Decode(&page)
 	if err != nil {
 		fmt.Println(err)
@@ -161,7 +161,7 @@ func (this *pageService) CopyPage(id primitive.ObjectID, url string) error {
 	page.ID = primitive.NewObjectID()
 	page.URL = url
 	result, err := this.mongo.Collection("page").InsertOne(
-		context.Background(),
+		context.TODO(),
 		page)
 	if err != nil {
 		fmt.Println(err)

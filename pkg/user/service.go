@@ -30,7 +30,7 @@ func NewService(mongo *mongo.Database) UserService {
 }
 
 func (this *userService) GetUserInfoByName(username string) (user User, err error) {
-	if err = this.mongo.Collection("user").FindOne(context.Background(), bson.M{"username": username}).Decode(&user); err != nil {
+	if err = this.mongo.Collection("user").FindOne(context.TODO(), bson.M{"username": username}).Decode(&user); err != nil {
 		return user, err
 	}
 	return user, nil
@@ -43,23 +43,23 @@ func (this *userService) GetUserList(offset, limit int64, search User) (users []
 	// createtime从大到小排序的数据
 	var cursor *mongo.Cursor
 	if cursor, err = this.mongo.Collection("user").Find(
-		context.Background(),
+		context.TODO(),
 		bson.M{},
 		options.Find().SetSkip(offset), options.Find().SetLimit(limit), options.Find().SetSort(bson.M{"createtime": -1})); err != nil {
 		return nil, 0, err
 	}
-	//for cursor.Next(context.Background()) {
+	//for cursor.Next(context.TODO()) {
 	//	user := User{}
 	//	if err = cursor.Decode(&user); err != nil {
 	//
 	//	}
 	//	users = append(users, user)
 	//}
-	if err = cursor.All(context.Background(), &users); err != nil {
+	if err = cursor.All(context.TODO(), &users); err != nil {
 		return nil, 0, err
 	}
 	//查询集合里面有多少数据
-	if count, err = this.mongo.Collection("user").CountDocuments(context.Background(), bson.D{}); err != nil {
+	if count, err = this.mongo.Collection("user").CountDocuments(context.TODO(), bson.D{}); err != nil {
 		return nil, 0, err
 	}
 
@@ -68,7 +68,7 @@ func (this *userService) GetUserList(offset, limit int64, search User) (users []
 }
 
 func (this *userService) CreateUser(user *User) (err error) {
-	result, err := this.mongo.Collection("user").InsertOne(context.Background(), user)
+	result, err := this.mongo.Collection("user").InsertOne(context.TODO(), user)
 	if err != nil {
 		return err
 	}
@@ -78,7 +78,7 @@ func (this *userService) CreateUser(user *User) (err error) {
 
 func (this *userService) UpdateUser(user *User) (err error) {
 	result := this.mongo.Collection("user").FindOneAndUpdate(
-		context.Background(),
+		context.TODO(),
 		bson.D{{"_id", user.ID}},
 		bson.M{
 			"$set": bson.M{
@@ -93,7 +93,7 @@ func (this *userService) UpdateUser(user *User) (err error) {
 }
 
 func (this *userService) DeleteUser(userID int) (err error) {
-	result, err := this.mongo.Collection("user").UpdateOne(context.Background(), bson.M{"_id": userID}, bson.M{"status": 0})
+	result, err := this.mongo.Collection("user").UpdateOne(context.TODO(), bson.M{"_id": userID}, bson.M{"status": 0})
 	if err != nil {
 		return err
 	}

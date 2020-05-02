@@ -3,11 +3,12 @@ package db
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/yuedun/ginode-mongo/util"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
-	"time"
 )
 
 var Connect *mongo.Client
@@ -19,13 +20,13 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, cancel := context.WithTimeout(context.TODO(), 20*time.Second)
 	defer cancel()
 	err = client.Connect(ctx)
 	if err != nil {
 		panic(err)
 	}
-	if err = client.Ping(context.Background(), readpref.Primary()); err != nil {
+	if err = client.Ping(context.TODO(), readpref.Primary()); err != nil {
 		panic(err)
 	}
 	fmt.Println("Connected to MongoDB!")
