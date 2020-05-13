@@ -45,15 +45,15 @@ func (this *pageService) GetPageList(offset, limit int64, search Page) (pages []
 		return nil, 0, err
 	}
 	defer cursor.Close(context.TODO())
-	page := Page{}
+	page := new(Page)
 	for cursor.Next(context.TODO()) {
-		if err = cursor.Decode(&page); err != nil {
+		if err = cursor.Decode(page); err != nil {
 			return nil, 0, err
 		}
 		if page.Components == nil {
-			page.Components = []component.Component{}
+			page.Components = &[]component.Component{}
 		}
-		pages = append(pages, page)
+		pages = append(pages, *page)
 	}
 	fmt.Printf("数据：%v\n", pages)
 	//查询集合里面有多少数据
@@ -122,13 +122,13 @@ func (this *pageService) DeletePage(pageID primitive.ObjectID) (err error) {
 }
 
 func (this *pageService) GetPageComponents(pageID primitive.ObjectID) (components []component.Component, err error) {
-	page := Page{}
-	err = this.mongo.Collection("page").FindOne(context.TODO(), bson.M{"_id": pageID}).Decode(&page)
+	page := new(Page)
+	err = this.mongo.Collection("page").FindOne(context.TODO(), bson.M{"_id": pageID}).Decode(page)
 	if err != nil {
 		return nil, err
 	}
 	fmt.Println(page)
-	components = page.Components
+	components = *page.Components
 	return components, nil
 }
 

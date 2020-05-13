@@ -86,8 +86,9 @@ func Create(c *gin.Context) {
 		panic(err)
 	}
 	comObj.ID = primitive.NewObjectID()
-	comObj.CreatedAt = time.Now()
-	comObj.UpdatedAt = time.Now()
+	nowTime := time.Now()
+	comObj.CreatedAt = &nowTime
+	comObj.UpdatedAt = &nowTime
 	comObj.Status = 1
 	err = componentService.CreateComponent(&comObj)
 	if err != nil {
