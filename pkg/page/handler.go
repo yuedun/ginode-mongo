@@ -33,13 +33,14 @@ func PageList(c *gin.Context) {
 		limit = 10
 	}
 	websiteID := c.Query("websiteID")
+	pageName := c.Query("name")
 	id, err := primitive.ObjectIDFromHex(websiteID)
 	if err != nil {
 		panic(err)
 	}
 	pageSearch := Page{
 		WebsiteID: id,
-		Status:    1,
+		Name:      pageName,
 	}
 	wbService := NewService(db.NewDB("website"))
 	list, total, err := wbService.GetPageList(offset, limit, pageSearch)

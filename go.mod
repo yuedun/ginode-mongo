@@ -4,17 +4,17 @@ go 1.14
 
 require (
 	github.com/appleboy/gin-jwt/v2 v2.6.3
-	github.com/gin-gonic/gin v1.6.2
-	github.com/golang/protobuf v1.4.0 // indirect
-	github.com/klauspost/compress v1.10.5 // indirect
+	github.com/gin-gonic/gin v1.6.3
+	github.com/golang/protobuf v1.4.2 // indirect
+	github.com/klauspost/compress v1.10.10 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/pkg/errors v0.9.1 // indirect
-	go.mongodb.org/mongo-driver v1.3.2
-	golang.org/x/crypto v0.0.0-20200422194213-44a606286825 // indirect
-	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
-	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f // indirect
+	go.mongodb.org/mongo-driver v1.3.5
+	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
+	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
+	golang.org/x/sys v0.0.0-20200722175500-76b94024e4b6 // indirect
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c
+	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
 )
 
 replace (

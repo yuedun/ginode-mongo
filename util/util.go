@@ -4,8 +4,11 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	yaml "gopkg.in/yaml.v3"
 	"io/ioutil"
+	"log"
+
+	"go.mongodb.org/mongo-driver/bson"
+	yaml "gopkg.in/yaml.v3"
 )
 
 //profile variables
@@ -16,16 +19,18 @@ type Conf struct {
 	Dbname string `yaml:"dbname"`
 }
 
-func (c *Conf) GetConf() *Conf {
-	yamlFile, err := ioutil.ReadFile("conf.yaml")
+func (c *Conf) GetConf(filename string) (config *Conf, err error) {
+	yamlFile, err := ioutil.ReadFile(filename)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err)
+		return nil, err
 	}
 	err = yaml.Unmarshal(yamlFile, c)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err)
+		return nil, err
 	}
-	return c
+	return c, nil
 }
 
 /**
@@ -49,4 +54,20 @@ func GeneratePassword(mobile string) string {
 	p := b[7:]
 	password := "hello" + string(p)
 	return GetMD5(password)
+}
+
+/**
+ * 将结构体转为bson.M，去除空字段，避免零值
+ * search必须是查询的表的结构体，否则映射出的字段可能不是表中存在的字段
+ */
+func Query(search interface{}) (condition bson.M, err error) {
+	//将结构体转为字节数组，userInfo中的字段根据需要设置值，需要保证没有值时不会有默认值出现
+	userbyte, err := bson.Marshal(search)
+	if err != nil {
+		return nil, err
+	}
+	//将字节码转为bson.M类型
+	bson.Unmarshal(userbyte, &condition)
+	log.Println("结构转bson：", condition)
+	return condition, nil
 }

@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -134,7 +133,7 @@ func Jwt() *jwt.GinJWTMiddleware {
 		},
 		// 获取不到token或解析token失败时如何返回信息
 		Unauthorized: func(c *gin.Context, code int, message string) {
-			fmt.Println(">>>>>>>验证未通过：", message)
+			log.Println(">>>>>>>验证未通过：", message)
 			c.JSON(code, gin.H{
 				"code":    code,
 				"message": message,
