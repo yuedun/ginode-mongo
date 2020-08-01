@@ -34,16 +34,18 @@ func PageList(c *gin.Context) {
 	}
 	websiteID := c.Query("websiteID")
 	pageName := c.Query("name")
+	url := c.Query("url")
 	id, err := primitive.ObjectIDFromHex(websiteID)
 	if err != nil {
 		panic(err)
 	}
-	pageSearch := Page{
+	search := Page{
 		WebsiteID: id,
 		Name:      pageName,
+		URL:       url,
 	}
 	wbService := NewService(db.NewDB("website"))
-	list, total, err := wbService.GetPageList(offset, limit, pageSearch)
+	list, total, err := wbService.GetPageList(offset, limit, search)
 	if err != nil {
 		panic(err)
 	}

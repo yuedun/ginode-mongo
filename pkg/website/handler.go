@@ -2,10 +2,11 @@ package website
 
 import (
 	"fmt"
-	jwt "github.com/appleboy/gin-jwt/v2"
 	"net/http"
 	"strconv"
 	"time"
+
+	jwt "github.com/appleboy/gin-jwt/v2"
 
 	"github.com/yuedun/ginode-mongo/db"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -39,14 +40,14 @@ func WebsiteList(c *gin.Context) {
 	}
 	name := c.Query("name")
 	category := c.Query("category")
-	websiteSearch := Website{
+	search := Website{
 		UserID:   userID,
 		Name:     name,
 		Category: category,
 		Status:   1,
 	}
 	wbService := NewService(db.NewDB("website"))
-	list, total, err := wbService.GetWebsiteList(offset, limit, websiteSearch)
+	list, total, err := wbService.GetWebsiteList(offset, limit, search)
 	data := map[string]any{
 		"result": list,
 		"count":  total,

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/yuedun/ginode-mongo/pkg/page"
+	"github.com/yuedun/ginode-mongo/util"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -37,17 +38,21 @@ func NewService(mongo *mongo.Database) WebsiteService {
  */
 func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) (websites []Website, count int64, err error) {
 	var cursor *mongo.Cursor
+	query, err := util.Query(search) //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
+	if err != nil {
+		return nil, 0, err
+	}
 	if cursor, err = this.mongo.Collection("website").Find(
 		context.TODO(),
-		bson.M{"user_id": search.UserID}, //没有条件必须为空，不能包含键值对，go中对象会是零值作为查询，所以条件只能动态填充
+		query,
 		options.Find().SetLimit(limit),
 		options.Find().SetSkip(offset),
 		options.Find().SetSort(bson.M{"_id": -1})); err != nil {
 		return nil, 0, err
 	}
 	defer cursor.Close(context.TODO())
-	website := Website{}
 	for cursor.Next(context.TODO()) {
+		website := Website{}
 		if err = cursor.Decode(&website); err != nil {
 			return nil, 0, err
 		}
@@ -55,11 +60,11 @@ func (this *websiteService) GetWebsiteList(offset, limit int64, search Website) 
 	}
 	fmt.Printf("数据：%v\n", websites)
 	//查询集合里面有多少数据
-	if count, err = this.mongo.Collection("website").CountDocuments(context.TODO(), bson.M{"user_id": search.UserID}); err != nil {
+	if count, err = this.mongo.Collection("website").CountDocuments(context.TODO(), query); err != nil {
 		return nil, 0, err
 	}
 
-	fmt.Printf("Count里面有多少条数据:%d\n", count)
+	fmt.Printf("Count:%d\n", count)
 	return websites, count, err
 }
 

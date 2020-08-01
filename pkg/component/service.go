@@ -58,7 +58,7 @@ func (u *componentService) GetComponentList(offset, limit int64, search Componen
 		return nil, 0, err
 	}
 
-	fmt.Printf("Count里面有多少条数据:%d\n", count)
+	fmt.Printf("Count:%d\n", count)
 	return components, count, err
 }
 

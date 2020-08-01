@@ -63,7 +63,7 @@ func (this *userService) GetUserList(offset, limit int64, search User) (users []
 		return nil, 0, err
 	}
 
-	fmt.Printf("Count里面有多少条数据:%d\n", count)
+	fmt.Printf("Count:%d\n", count)
 	return users, count, err
 }
 
