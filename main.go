@@ -19,8 +19,7 @@ import (
 
 //将数据库初始化放在main中可以避免配置文件找不到问题，比如在执行单元测试时目录变成tests,配置文件就要改成../conf.yaml才行。
 func init() {
-	conf := util.Conf{}
-	c, err := conf.GetConf("conf.yaml")
+	c, err := util.GetConf("conf.yaml")
 	if err != nil {
 		panic(err)
 	}

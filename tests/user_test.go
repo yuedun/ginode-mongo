@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/yuedun/ginode-mongo/db"
-	_ "github.com/yuedun/ginode-mongo/db"
 	"github.com/yuedun/ginode-mongo/pkg/page"
 	"github.com/yuedun/ginode-mongo/pkg/user"
 	"github.com/yuedun/ginode-mongo/util"
@@ -33,6 +32,6 @@ func TestCreateUser(t *testing.T) {
 
 func TestQuery(t *testing.T) {
 	q := page.Page{Name: "主页", WebsiteID: primitive.NewObjectID()}
-	r, _ := util.Qeury(q)
+	r, _ := util.Query(q)
 	t.Log(r)
 }

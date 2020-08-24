@@ -120,3 +120,22 @@ D: A BSON document. This type should be used in situations where order matters, 
 M: An unordered map. It is the same as D, except it does not preserve order.
 A: A BSON array.
 E: A single element inside a D.
+
+### 连接atlas数据库
+```
+ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+defer cancel()
+client, err := mongo.Connect(ctx, options.Client().ApplyURI(
+	"mongodb+srv://<username>:<password>@<host>/<database>?retryWrites=true&w=majority",
+))
+if err != nil { log.Fatal(err) }
+err=client.Ping(context.TODO(), readpref.Primary())
+if err!=nil {
+	log.Fatal(err)
+}
+log.Println("Connected to MongoDB!")
+
+u:=user.User{}
+client.Database("website").Collection("website").FindOne(ctx, bson.M{}).Decode(u)
+log.Println(u)
+```
