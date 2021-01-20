@@ -74,18 +74,16 @@ func (this *websiteService) GetWebsite(name, url string) (websiteData Website, p
 	website := Website{}
 	if err = this.mongo.Collection("website").FindOne(
 		context.TODO(),
-		bson.M{"url": name}).Decode(&website); err != nil {
+		bson.M{"status": 1, "url": name}).Decode(&website); err != nil {
 		fmt.Println("get website err:", err.Error())
 		return website, pageData, err
 	}
-	fmt.Printf("website数据:%+v\n", website)
 	if err = this.mongo.Collection("page").FindOne(
 		context.TODO(),
-		bson.M{"website_id": website.ID, "url": url}).Decode(&pageData); err != nil {
+		bson.M{"website_id": website.ID, "status": 1, "url": url}).Decode(&pageData); err != nil {
 		fmt.Println("get page err:", err.Error())
 		return website, pageData, err
 	}
-	fmt.Printf("page数据:%+v\n", pageData)
 	return website, pageData, nil
 }
 

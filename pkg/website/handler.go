@@ -74,10 +74,10 @@ func GetWebsite(c *gin.Context) {
 		}
 	}()
 	webService := NewService(db.NewDB("website"))
-	name := c.Query("name")
-	url := c.Query("url")
-	fmt.Println("name:", name, url)
-	website, page, err := webService.GetWebsite(name, url)
+	websiteName := c.Query("name")
+	pageURL := c.Query("url")
+	fmt.Println("name:", websiteName, pageURL)
+	website, page, err := webService.GetWebsite(websiteName, pageURL)
 	if err != nil {
 		c.JSON(http.StatusNoContent, gin.H{
 			"err": err.Error(),

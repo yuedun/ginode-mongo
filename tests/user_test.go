@@ -2,7 +2,6 @@ package tests
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"testing"
 	"time"
@@ -22,7 +21,7 @@ func TestMain(m *testing.M) {
 	if err != nil {
 		panic(err)
 	}
-	client, err := mongo.NewClient(options.Client().ApplyURI(fmt.Sprintf("mongodb://%v:%v@%v/%v", c.User, c.Pwd, c.Host, c.Dbname)))
+	client, err := mongo.NewClient(options.Client().ApplyURI(c.MongoURL))
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +59,7 @@ func TestCreateUser(t *testing.T) {
 }
 
 func TestQuery(t *testing.T) {
-	q := page.Page{Name: "主页", WebsiteID: primitive.NewObjectID()}
+	q := page.Page{Title: "主页", WebsiteID: primitive.NewObjectID()}
 	r, _ := util.Query(q)
 	t.Log(r)
 }

@@ -117,9 +117,24 @@ golang.org/x/text => github.com/golang/text latest
 
 ### mongodb bson类型：
 D: A BSON document. This type should be used in situations where order matters, such as MongoDB commands.
+D是BSON文档的有序表示。当元素的顺序重要时，应使用此类型，
+例如MongoDB命令文档。如果元素的顺序无关紧要，则应使用M代替。
+用法示例：
+bson.D {{"foo","bar"},{"hello","world"},{"pi",3.14159}}
+
 M: An unordered map. It is the same as D, except it does not preserve order.
-A: A BSON array.
+M是BSON文档的无序表示。当元素的顺序不正确时,应使用此类型
+很重要。在编码和解码时，将这种类型作为常规map [string] interface {}处理。元素将是
+以未定义的随机顺序序列化。如果元素的顺序很重要，则应使用D代替。
+用法示例：
+bson.M {"foo"："bar","hello"："world","pi"：3.14159}
+
+A: A BSON array.A是BSON数组的有序表示。
+用法示例：
+bson.A {"bar","world",3.14159,bson.D {{"qux",12345}}}
+
 E: A single element inside a D.
+E代表D的BSON元素。通常在D内使用。
 
 ### 连接atlas数据库
 ```

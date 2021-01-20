@@ -1,4 +1,1 @@
-host: localhost:27017
-user: root
-pwd: root
-dbname: website
+mongourl: mongodb://root:root@localhost4:27017/website

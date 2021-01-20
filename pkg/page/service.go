@@ -94,10 +94,10 @@ func (this *pageService) CreatePage(page *Page) (err error) {
 func (this *pageService) UpdatePage(page *Page) (err error) {
 	result, err := this.mongo.Collection("page").UpdateOne(
 		context.TODO(),
-		bson.D{{"_id", page.ID}},
+		bson.D{primitive.E{Key: "_id", Value: page.ID}},
 		bson.M{
 			"$set": bson.M{
-				"name":        page.Name,
+				"title":       page.Title,
 				"components":  page.Components,
 				"url":         page.URL,
 				"keywords":    page.Keywords,
@@ -106,6 +106,20 @@ func (this *pageService) UpdatePage(page *Page) (err error) {
 			},
 		})
 	fmt.Println(result.MatchedCount, result.ModifiedCount)
+	// 记录修改日志
+	go func() {
+		this.mongo.Collection("change_history").InsertOne(
+			context.TODO(),
+			bson.D{
+				{Key: "page_id", Value: page.ID},
+				{Key: "title", Value: page.Title},
+				{Key: "keywords", Value: page.Keywords},
+				{Key: "description", Value: page.Description},
+				{Key: "url", Value: page.URL},
+				{Key: "components", Value: page.Components},
+				{Key: "status", Value: page.Status},
+			})
+	}()
 	if err != nil {
 		return err
 	}

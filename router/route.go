@@ -40,7 +40,7 @@ func Register(router *gin.Engine) {
 	pageRouter := router.Group("/page")
 	pageRouter.Use(middleware.Jwt().MiddlewareFunc())
 	{
-		pageRouter.GET("/list", page.PageList)
+		pageRouter.GET("/list", page.List)
 		pageRouter.POST("/create/:websiteId", page.Create)
 		pageRouter.PUT("/update", page.Update)
 		pageRouter.DELETE("/delete/:id", page.Delete)
@@ -59,12 +59,13 @@ func Register(router *gin.Engine) {
 		componentRouter.DELETE("/delete/:id", component.Delete)
 	}
 	//website路由注册
-	websiteAPI := router.Group("/api/website")
+	websiteAPI := router.Group("/api")
 	{
-		websiteAPI.GET("/", website.WebsiteList)
-		websiteAPI.GET("/get-website", website.GetWebsite)
-		websiteAPI.POST("/create", website.Create)
-		websiteAPI.PUT("/update", website.Update)
-		websiteAPI.DELETE("/delete/:id", website.Delete)
+		websiteSubAPI := websiteAPI.Group("/website")
+		websiteSubAPI.GET("/", website.WebsiteList)
+		websiteSubAPI.GET("/get-website", website.GetWebsite)
+		websiteSubAPI.POST("/create", website.Create)
+		websiteSubAPI.PUT("/update", website.Update)
+		websiteSubAPI.DELETE("/delete/:id", website.Delete)
 	}
 }

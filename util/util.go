@@ -13,10 +13,7 @@ import (
 
 //profile variables
 type Conf struct {
-	Host   string `yaml:"host"`
-	User   string `yaml:"user"`
-	Pwd    string `yaml:"pwd"`
-	Dbname string `yaml:"dbname"`
+	MongoURL string `yaml:mongoURL`
 }
 
 func GetConf(filename string) (*Conf, error) {

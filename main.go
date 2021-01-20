@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -23,7 +22,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	client, err := mongo.NewClient(options.Client().ApplyURI(fmt.Sprintf("mongodb://%v:%v@%v/%v", c.User, c.Pwd, c.Host, c.Dbname)))
+	client, err := mongo.NewClient(options.Client().ApplyURI(c.MongoURL))
 	if err != nil {
 		panic(err)
 	}

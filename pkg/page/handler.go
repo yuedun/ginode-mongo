@@ -15,8 +15,8 @@ import (
 
 type any = interface{}
 
-//PageList列表
-func PageList(c *gin.Context) {
+// List 列表
+func List(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
@@ -33,7 +33,7 @@ func PageList(c *gin.Context) {
 		limit = 10
 	}
 	websiteID := c.Query("websiteID")
-	pageName := c.Query("name")
+	title := c.Query("title")
 	url := c.Query("url")
 	id, err := primitive.ObjectIDFromHex(websiteID)
 	if err != nil {
@@ -41,7 +41,7 @@ func PageList(c *gin.Context) {
 	}
 	search := Page{
 		WebsiteID: id,
-		Name:      pageName,
+		Title:     title,
 		URL:       url,
 	}
 	wbService := NewService(db.NewDB("website"))
@@ -65,7 +65,7 @@ func PageList(c *gin.Context) {
 	})
 }
 
-// 获取单个网站
+// GetPage 获取单个网站
 func GetPage(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -90,7 +90,7 @@ func GetPage(c *gin.Context) {
 
 }
 
-//Create
+//Create 创建页面
 func Create(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -103,12 +103,12 @@ func Create(c *gin.Context) {
 	newObj := Page{}
 	c.ShouldBind(&newObj)
 	//newObj.ID = primitive.NewObjectID()
-	websiteId := c.Param("websiteId")
-	webId, err := primitive.ObjectIDFromHex(websiteId)
+	websiteID := c.Param("websiteId")
+	webID, err := primitive.ObjectIDFromHex(websiteID)
 	if err != nil {
 		panic(err)
 	}
-	newObj.WebsiteID = webId
+	newObj.WebsiteID = webID
 	newObj.CreatedAt = time.Now()
 	newObj.UpdatedAt = time.Now()
 	newObj.Status = 1
@@ -123,7 +123,7 @@ func Create(c *gin.Context) {
 	})
 }
 
-//Update
+//Update 修改页面
 func Update(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -135,14 +135,12 @@ func Update(c *gin.Context) {
 	pageService := NewService(db.NewDB("website"))
 	page := Page{}
 	c.ShouldBind(&page)
-	fmt.Println(page)
 	err := pageService.UpdatePage(&page)
 	if err != nil {
 		fmt.Println("err:", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": err.Error(),
 		})
-		return
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"data":    page,
@@ -151,7 +149,7 @@ func Update(c *gin.Context) {
 	}
 }
 
-//Delete
+//Delete 删除页面
 func Delete(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -160,8 +158,8 @@ func Delete(c *gin.Context) {
 			})
 		}
 	}()
-	pageId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(pageId)
+	pageID := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageID)
 	if err != nil {
 		panic(err)
 	}
@@ -176,7 +174,7 @@ func Delete(c *gin.Context) {
 	})
 }
 
-//GetPageComponents
+//GetPageComponents 获取页面组件
 func GetPageComponents(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {
@@ -185,8 +183,8 @@ func GetPageComponents(c *gin.Context) {
 			})
 		}
 	}()
-	pageId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(pageId)
+	pageID := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageID)
 	if err != nil {
 		panic(err)
 	}
@@ -212,8 +210,8 @@ func UpdatePageComponents(c *gin.Context) {
 			})
 		}
 	}()
-	pageId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(pageId)
+	pageID := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageID)
 	var pageComponents []component.Component
 	c.ShouldBind(&pageComponents)
 	fmt.Println(pageComponents)
@@ -236,8 +234,8 @@ func CopyPage(c *gin.Context) {
 			})
 		}
 	}()
-	pageId := c.Param("id")
-	id, err := primitive.ObjectIDFromHex(pageId)
+	pageID := c.Param("id")
+	id, err := primitive.ObjectIDFromHex(pageID)
 	if err != nil {
 		panic(err)
 	}

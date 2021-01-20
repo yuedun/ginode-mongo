@@ -17,9 +17,9 @@ type Component struct {
 	Description   string             `json:"description,omitempty" bson:"description"`       //文字描述
 	BackgroundImg string             `json:"background_img,omitempty" bson:"background_img"` //背景图
 	BigImg        string             `json:"big_img,omitempty" bson:"big_img"`               //展示大图
-	Elements      *[]Element         `json:"elements" bson:"elements,omitempty"`             //多个同类型元素列表展示
-	Links         *[]Link            `json:"links,omitempty" bson:"links,omitempty"`         //链接或按钮
-	Extras        *[]Component       `json:"extras,omitempty" bson:"extras,omitempty"`       //其他补充内容
+	Elements      []Element          `json:"elements" bson:"elements,omitempty"`             //多个同类型元素列表展示
+	Links         []Link             `json:"links,omitempty" bson:"links,omitempty"`         //链接或按钮
+	Extras        []Component        `json:"extras,omitempty" bson:"extras,omitempty"`       //其他补充内容
 	Status        int                `json:"status,omitempty" bson:"status,omitempty"`       //可用状态
 	Sort          int                `json:"sort,omitempty" bson:"sort,omitempty"`           //排序
 	CreatedAt     *time.Time         `json:"created_at,omitempty" bson:"created_at,omitempty"`

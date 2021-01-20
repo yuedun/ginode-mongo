@@ -7,10 +7,10 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Page 页面数据结构
-type Page struct {
+// ChangeHistory 修改历史，便于回滚
+type ChangeHistory struct {
 	ID          primitive.ObjectID    `json:"_id" bson:"_id,omitempty"` //bson是用来创建后返回，omitempty是可选
-	WebsiteID   primitive.ObjectID    `json:"website_id" bson:"website_id,omitempty"`
+	PageID      primitive.ObjectID    `json:"page_id" bson:"page_id"`
 	Title       string                `json:"title" bson:"title,omitempty"`             //网站名 TDK title
 	Keywords    string                `json:"keywords" bson:"keywords,omitempty"`       //关键字 TDK keywords
 	Description string                `json:"description" bson:"description,omitempty"` //描述 TDK description
