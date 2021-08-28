@@ -1,7 +1,7 @@
 {
-    "WorkingDir": "D:\\goproject\\ginode-mongo",
+    "WorkingDir": "D:\\workspace-gomod\\ginode-mongo",
     "SourceDir": [
-        "D:\\goproject\\ginode-mongo"
+        "D:\\workspace-gomod\\ginode-mongo"
     ],
     "SourceExt": [".go"],
     "BuildCmd": "go build",

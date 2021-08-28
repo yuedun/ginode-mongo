@@ -1,19 +1,26 @@
 module github.com/yuedun/ginode-mongo
 
-go 1.14
+go 1.16
 
 require (
 	github.com/appleboy/gin-jwt/v2 v2.6.4
-	github.com/gin-gonic/gin v1.6.3
-	github.com/golang/protobuf v1.4.2 // indirect
-	github.com/klauspost/compress v1.11.0 // indirect
-	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
-	go.mongodb.org/mongo-driver v1.4.1
-	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a // indirect
-	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208 // indirect
-	golang.org/x/sys v0.0.0-20200929083018-4d22bbb62b3c // indirect
-	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
-	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776
+	github.com/gin-gonic/gin v1.7.4
+	github.com/go-playground/validator/v10 v10.9.0 // indirect
+	github.com/go-stack/stack v1.8.1 // indirect
+	github.com/golang/protobuf v1.5.2 // indirect
+	github.com/golang/snappy v0.0.4 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/ugorji/go v1.2.6 // indirect
+	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
+	go.mongodb.org/mongo-driver v1.7.3
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
+	golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac // indirect
+	golang.org/x/text v0.3.7 // indirect
+	google.golang.org/protobuf v1.27.1 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
 replace (

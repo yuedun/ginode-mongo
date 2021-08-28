@@ -1,5 +1,5 @@
 # ginode-mongo
-一个和nodejs很像的框架
+一个和nodejs express很像的框架
 
 ## 本地开发
 > go run main.go
